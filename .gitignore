@@ -1,0 +1,25 @@
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# 未使用の元画像素材・作業用フォルダ
+assets/ゲーム画像/
+assets/日記用スクショ/
+assets/Gemini_Generated_Image_h4uxf5h4uxf5h4ux*.png
+assets/Gemini_Generated_Image_jn472tjn472tjn47.png
+assets/Gemini_Generated_Image_kvririkvririkvri.png
+assets/OIG1.F_transparent.png
+assets/_6f1e0fd3-ae82-4bbe-b371-917d0bec123c.jpg
+assets/_a3c4a406-3531-4919-abcd-415159dafdfd.jpg
+
+# Python
+__pycache__/
+*.pyc

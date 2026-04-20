@@ -1,0 +1,176 @@
+{
+  "stages": [
+    {
+      "id": 0,
+      "name": "さびれた無人駅",
+      "passengersPerMin": 1,
+      "incomePerPassenger": 3,
+      "upgrades": [
+        { "id": "clean_platform", "name": "ホームの掃除", "cost": 0, "icon": "🧹", "description": "雑草だらけのホームをきれいにする", "effect": "きれい度 +30", "bonus": { "cleanPower": 2 } },
+        { "id": "fix_bench", "name": "ベンチの修理", "cost": 150, "icon": "🪑", "description": "壊れたベンチを直す", "effect": "乗客数 +10%", "bonus": { "passenger": 0.10 } },
+        { "id": "add_sign", "name": "駅名看板の設置", "cost": 300, "icon": "🪧", "description": "駅の名前がわかるようにする", "effect": "評判 +20", "bonus": { "reputation": 20 } },
+        { "id": "fix_roof", "name": "屋根の修理", "cost": 600, "icon": "🏠", "description": "雨漏りする屋根を直す", "effect": "きれい度低下 -20%", "bonus": { "cleanDecay": -0.20 } }
+      ]
+    },
+    {
+      "id": 1,
+      "name": "小さな駅",
+      "passengersPerMin": 2,
+      "incomePerPassenger": 5,
+      "upgrades": [
+        { "id": "add_cleaning_tools", "name": "清掃用具の充実", "cost": 1500, "icon": "🧹", "description": "ほうきやバケツ。掃除の効率が少し上がる", "effect": "掃除効率UP", "bonus": { "cleanPower": 3 } },
+        { "id": "add_light", "name": "照明の設置", "cost": 3000, "icon": "💡", "description": "夜も安心な明かり。夜の来客数がアップ！", "effect": "乗客数 +10%", "bonus": { "passenger": 0.10 } },
+        { "id": "add_bulletin", "name": "掲示板の設置", "cost": 4000, "icon": "🪵", "description": "地域の情報を掲示。地元の人が寄り道しやすくなる", "effect": "乗客数 +8%", "bonus": { "passenger": 0.08 } },
+        { "id": "add_clock", "name": "時計の設置", "cost": 5500, "icon": "🕐", "description": "時間がわかる安心感。評判が少しアップ", "effect": "評判 +50", "bonus": { "reputation": 50 }, "requireVisitors": 50 },
+        { "id": "add_flowerbed", "name": "花壇をつくる", "cost": 7000, "icon": "🌷", "description": "駅を彩る花々。きれい度が下がりにくくなる", "effect": "きれい度低下 -15%", "bonus": { "cleanDecay": -0.15 }, "requireVisitors": 80 },
+        { "id": "add_ticket", "name": "券売機の設置", "cost": 10000, "icon": "🎫", "description": "きっぷが買える。自動でお金が貯まりやすくなる", "effect": "収益 +15%", "bonus": { "income": 0.15 }, "requireVisitors": 120 }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "中規模駅",
+      "passengersPerMin": 8,
+      "incomePerPassenger": 8,
+      "upgrades": [
+        { "id": "add_vending", "name": "自販機コーナー", "cost": 12000, "icon": "🥤", "description": "飲み物のラインナップ充実。手軽に収益UP", "effect": "収益 +10%", "bonus": { "income": 0.10 } },
+        { "id": "add_kiosk", "name": "売店オープン", "cost": 18000, "icon": "🏪", "description": "お弁当やお菓子が買える", "effect": "収益 +12%", "bonus": { "income": 0.12 } },
+        { "id": "add_lockers", "name": "コインロッカー", "cost": 22000, "icon": "📦", "description": "荷物を預けて街へ。観光客の利用が増える", "effect": "乗客数 +10%", "bonus": { "passenger": 0.10 }, "requireVisitors": 300 },
+        { "id": "add_toilet", "name": "トイレの設置", "cost": 28000, "icon": "🚻", "description": "綺麗なトイレは基本！満足度が大幅に上がるよ", "effect": "評判 +100", "bonus": { "reputation": 100 }, "requireVisitors": 400 },
+        { "id": "add_bicycle", "name": "駐輪場の整備", "cost": 28000, "icon": "🚲", "description": "自転車で来る人が増加。朝の利用客が増える", "effect": "乗客数 +12%", "bonus": { "passenger": 0.12 }, "requireVisitors": 500 },
+        { "id": "add_atm", "name": "駅ナカATM", "cost": 32000, "icon": "🏧", "description": "急にお金が必要な時も安心。収益効率がUP", "effect": "収益 +15%", "bonus": { "income": 0.15 }, "requireVisitors": 600 },
+        { "id": "add_waitroom", "name": "待合室の建設", "cost": 40000, "icon": "🏢", "description": "空調完備で快適。暑い日や寒い日の集客UP", "effect": "乗客数 +15%", "bonus": { "passenger": 0.15 }, "requireVisitors": 800 },
+        { "id": "add_elevator", "name": "エレベーター設置", "cost": 50000, "icon": "🛗", "description": "バリアフリー対応。家族連れが降りやすくなる", "effect": "乗客数 +12% / 評判 +80", "bonus": { "passenger": 0.12, "reputation": 80 }, "requireVisitors": 1000 }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "大きな駅",
+      "passengersPerMin": 20,
+      "incomePerPassenger": 12,
+      "upgrades": [
+        { "id": "add_watercooler", "name": "冷水機の設置", "cost": 30000, "icon": "🚰", "description": "ちょっとした心遣い。満足度が底上げされる", "effect": "評判 +80", "bonus": { "reputation": 80 } },
+        { "id": "add_wifi", "name": "無料Wi-Fi", "cost": 55000, "icon": "📶", "description": "ネットが使える。若者の滞在時間が爆増するよ", "effect": "乗客数 +15%", "bonus": { "passenger": 0.15 }, "requireVisitors": 1500 },
+        { "id": "add_display", "name": "電光掲示板", "cost": 65000, "icon": "📺", "description": "列車の状況がすぐわかる。利便性が最高に！", "effect": "評判 +150", "bonus": { "reputation": 150 }, "requireVisitors": 2000 },
+        { "id": "add_decoration", "name": "季節の装飾", "cost": 70000, "icon": "🎍", "description": "季節ごとの飾り。評判が上がり「エモさ」MAX", "effect": "評判 +200", "bonus": { "reputation": 200 }, "requireVisitors": 2500 },
+        { "id": "add_security", "name": "駅員室の拡張", "cost": 80000, "icon": "👮", "description": "治安が良くなり、汚れや劣化を防ぎやすくなる", "effect": "きれい度低下 -30%", "bonus": { "cleanDecay": -0.30 }, "requireVisitors": 3000 },
+        { "id": "add_cafe", "name": "カフェオープン", "cost": 90000, "icon": "☕", "description": "香り高いコーヒー。カップルや若者が増える", "effect": "乗客数 +12% / 収益 +10%", "bonus": { "passenger": 0.12, "income": 0.10 }, "requireVisitors": 3500 },
+        { "id": "add_bakery", "name": "ベーカリー", "cost": 95000, "icon": "🥯", "description": "焼きたてパンの匂い。つい降りちゃう人が続出", "effect": "乗客数 +18%", "bonus": { "passenger": 0.18 }, "requireVisitors": 4000 },
+        { "id": "add_bookstore", "name": "書店オープン", "cost": 110000, "icon": "📚", "description": "待ち時間に読書。知的な客層が降りるようになる", "effect": "乗客数 +10% / 評判 +100", "bonus": { "passenger": 0.10, "reputation": 100 }, "requireVisitors": 4500 },
+        { "id": "add_ekiben", "name": "駅弁販売所", "cost": 130000, "icon": "🍱", "description": "旅の楽しみ。観光客の収益がさらにアップ", "effect": "収益 +20%", "bonus": { "income": 0.20 }, "requireVisitors": 5000 },
+        { "id": "add_plaza", "name": "駅前広場の整備", "cost": 160000, "icon": "🏛️", "description": "バス・タクシー乗り場完成。集客が大幅UP", "effect": "乗客数 +20% / 評判 +300", "bonus": { "passenger": 0.20, "reputation": 300 }, "requireVisitors": 6000 }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "駅ビル",
+      "passengersPerMin": 50,
+      "incomePerPassenger": 20,
+      "upgrades": [
+        { "id": "add_laundry", "name": "ランドリー", "cost": 120000, "icon": "🧺", "description": "忙しい人の味方。リピーターが確実に増える", "effect": "乗客数 +10%", "bonus": { "passenger": 0.10 }, "requireVisitors": 8000 },
+        { "id": "add_rooftop", "name": "屋上庭園", "cost": 150000, "icon": "🌿", "description": "都会のオアシス。評判が最高潮に達するよ", "effect": "評判 +500", "bonus": { "reputation": 500 }, "requireVisitors": 9000 },
+        { "id": "add_observatory", "name": "展望テラス", "cost": 180000, "icon": "🌅", "description": "最高の夜景。デートスポットとして有名になる", "effect": "評判 +400 / 乗客数 +12%", "bonus": { "reputation": 400, "passenger": 0.12 }, "requireVisitors": 10000 },
+        { "id": "add_coworking", "name": "コワーキング", "cost": 200000, "icon": "🏢", "description": "駅で仕事。ビジネスマンの利用率が爆上がり", "effect": "収益 +15% / 乗客数 +10%", "bonus": { "income": 0.15, "passenger": 0.10 }, "requireVisitors": 11000 },
+        { "id": "add_apparel", "name": "アパレル店", "cost": 230000, "icon": "👗", "description": "最新ファッション。おしゃれな客層が激増", "effect": "乗客数 +15% / 収益 +10%", "bonus": { "passenger": 0.15, "income": 0.10 }, "requireVisitors": 12000 },
+        { "id": "add_arcade", "name": "ゲームセンター", "cost": 260000, "icon": "🎮", "description": "賑やかさ満点！あらゆる世代が集まる場所に", "effect": "乗客数 +20%", "bonus": { "passenger": 0.20 }, "requireVisitors": 13000 },
+        { "id": "add_foodcourt", "name": "フードコート", "cost": 300000, "icon": "🍔", "description": "多彩なグルメ。家族連れの集客が最強に", "effect": "乗客数 +18% / 収益 +12%", "bonus": { "passenger": 0.18, "income": 0.12 }, "requireVisitors": 14000 },
+        { "id": "add_drugstore", "name": "ドラッグストア", "cost": 340000, "icon": "🛍️", "description": "生活の必需品。近隣住民が毎日来るようになる", "effect": "乗客数 +12% / 収益 +12%", "bonus": { "passenger": 0.12, "income": 0.12 }, "requireVisitors": 15000 },
+        { "id": "add_clinic", "name": "駅ビル診療所", "cost": 380000, "icon": "🏥", "description": "便利な病院。毎日通う固定客が増える", "effect": "乗客数 +15% / 評判 +300", "bonus": { "passenger": 0.15, "reputation": 300 }, "requireVisitors": 17000 },
+        { "id": "add_fitness", "name": "フィットネス", "cost": 420000, "icon": "🏋️", "description": "仕事帰りに一汗。滞在時間がさらに延びる", "effect": "収益 +20%", "bonus": { "income": 0.20 }, "requireVisitors": 18000 },
+        { "id": "add_bank", "name": "銀行支店", "cost": 500000, "icon": "🏦", "description": "ビジネスの拠点。スーツの会社員が増える", "effect": "収益 +25% / 乗客数 +10%", "bonus": { "income": 0.25, "passenger": 0.10 }, "requireVisitors": 20000 },
+        { "id": "add_cinema", "name": "シネコン建設", "cost": 650000, "icon": "🎬", "description": "映画が観れる駅。夜の賑わいがとんでもないことに", "effect": "乗客数 +25% / 収益 +20%", "bonus": { "passenger": 0.25, "income": 0.20 }, "requireVisitors": 25000 }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "ターミナル駅",
+      "passengersPerMin": 100,
+      "incomePerPassenger": 30,
+      "upgrades": [
+        { "id": "add_express_platform", "name": "快速ホーム", "cost": 700000, "icon": "🚄", "description": "快速が止まるように！ 乗降客が激増", "effect": "乗客数 +15%", "bonus": { "passenger": 0.15 } },
+        { "id": "add_transfer_passage", "name": "乗換連絡通路", "cost": 900000, "icon": "🚶", "description": "他路線との乗り換えがスムーズに", "effect": "乗客数 +12% / 評判 +300", "bonus": { "passenger": 0.12, "reputation": 300 } },
+        { "id": "add_escalator", "name": "エスカレーター", "cost": 1100000, "icon": "🔼", "description": "お年寄りや荷物の多い人に大好評", "effect": "評判 +500", "bonus": { "reputation": 500 } },
+        { "id": "add_pressure_washer", "name": "高圧洗浄機", "cost": 1000000, "icon": "🔫", "description": "強力な清掃設備。広い駅も楽にきれいに", "effect": "きれい度低下 -25%", "bonus": { "cleanDecay": -0.25 }, "requireVisitors": 35000 },
+        { "id": "add_concourse", "name": "コンコース拡張", "cost": 1300000, "icon": "🏛️", "description": "広々とした空間で快適な待ち合わせ", "effect": "乗客数 +10% / 収益 +10%", "bonus": { "passenger": 0.10, "income": 0.10 }, "requireVisitors": 38000 },
+        { "id": "add_extra_gates", "name": "改札増設", "cost": 1500000, "icon": "🚪", "description": "朝のラッシュもスムーズに", "effect": "収益 +15%", "bonus": { "income": 0.15 }, "requireVisitors": 42000 },
+        { "id": "add_taxi_terminal", "name": "タクシーターミナル", "cost": 1700000, "icon": "🚕", "description": "タクシー乗り場を本格整備", "effect": "乗客数 +12%", "bonus": { "passenger": 0.12 }, "requireVisitors": 46000 },
+        { "id": "add_bus_terminal", "name": "バスターミナル", "cost": 1900000, "icon": "🚌", "description": "路線バスの拠点化。広域からの集客力UP", "effect": "乗客数 +15% / 収益 +8%", "bonus": { "passenger": 0.15, "income": 0.08 }, "requireVisitors": 50000 },
+        { "id": "add_vip_lounge", "name": "VIPラウンジ", "cost": 2200000, "icon": "👑", "description": "上質な空間。高単価のお客様が増える", "effect": "収益 +20% / 評判 +500", "bonus": { "income": 0.20, "reputation": 500 }, "requireVisitors": 54000 },
+        { "id": "add_hotel_gate", "name": "ホテル直結口", "cost": 2500000, "icon": "🏨", "description": "宿泊客が直接降りてくる。終日賑わう駅に", "effect": "乗客数 +18% / 評判 +600", "bonus": { "passenger": 0.18, "reputation": 600 }, "requireVisitors": 58000 }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "観光名所駅",
+      "passengersPerMin": 180,
+      "incomePerPassenger": 45,
+      "upgrades": [
+        { "id": "add_footbath", "name": "足湯コーナー", "cost": 2500000, "icon": "♨️", "description": "旅の疲れを癒やす足湯。SNS映え抜群", "effect": "乗客数 +12% / 評判 +500", "bonus": { "passenger": 0.12, "reputation": 500 } },
+        { "id": "add_souvenir_street", "name": "お土産街", "cost": 3000000, "icon": "🎁", "description": "名産品がずらり。お財布の紐がゆるむ", "effect": "収益 +18%", "bonus": { "income": 0.18 } },
+        { "id": "add_tourist_info", "name": "観光案内所", "cost": 3300000, "icon": "ℹ️", "description": "多言語対応の案内所。外国人客も安心", "effect": "乗客数 +10% / 評判 +400", "bonus": { "passenger": 0.10, "reputation": 400 } },
+        { "id": "add_japanese_garden", "name": "和風庭園", "cost": 3800000, "icon": "🎋", "description": "四季折々の美しい庭園。心が洗われる", "effect": "きれい度低下 -20% / 評判 +800", "bonus": { "cleanDecay": -0.20, "reputation": 800 }, "requireVisitors": 85000 },
+        { "id": "add_rickshaw", "name": "人力車乗り場", "cost": 4000000, "icon": "🛺", "description": "風情ある移動手段。観光客に大人気", "effect": "収益 +12% / 乗客数 +8%", "bonus": { "income": 0.12, "passenger": 0.08 }, "requireVisitors": 95000 },
+        { "id": "add_photo_spot", "name": "写真映えスポット", "cost": 4500000, "icon": "📸", "description": "インスタ映えスポット整備。若者殺到", "effect": "乗客数 +15% / 評判 +600", "bonus": { "passenger": 0.15, "reputation": 600 }, "requireVisitors": 105000 },
+        { "id": "add_mascot_shop", "name": "ご当地キャラショップ", "cost": 5000000, "icon": "🧸", "description": "かわいいグッズが大人気。リピーター続出", "effect": "収益 +15% / 乗客数 +8%", "bonus": { "income": 0.15, "passenger": 0.08 }, "requireVisitors": 115000 },
+        { "id": "add_ekiben_gp", "name": "駅弁グランプリ常設", "cost": 5500000, "icon": "🍱", "description": "全国の名物駅弁が集結。グルメの聖地", "effect": "収益 +22%", "bonus": { "income": 0.22 }, "requireVisitors": 125000 },
+        { "id": "add_onsen", "name": "温泉施設", "cost": 6000000, "icon": "🧖", "description": "駅直結温泉。日帰り客が激増", "effect": "乗客数 +20% / 評判 +1000", "bonus": { "passenger": 0.20, "reputation": 1000 }, "requireVisitors": 135000 },
+        { "id": "add_sky_terrace", "name": "展望テラス拡張", "cost": 6500000, "icon": "🌅", "description": "絶景テラス。夕日の名所として全国区に", "effect": "評判 +1500 / 乗客数 +12%", "bonus": { "reputation": 1500, "passenger": 0.12 }, "requireVisitors": 145000 }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "スマート駅",
+      "passengersPerMin": 300,
+      "incomePerPassenger": 65,
+      "upgrades": [
+        { "id": "add_ai_gate", "name": "AI改札", "cost": 5500000, "icon": "🤖", "description": "顔認証で改札を通過。未来の駅の象徴", "effect": "収益 +12% / 評判 +600", "bonus": { "income": 0.12, "reputation": 600 } },
+        { "id": "add_digital_signage", "name": "デジタルサイネージ", "cost": 6500000, "icon": "📱", "description": "インタラクティブな案内表示。利便性UP", "effect": "乗客数 +10% / 評判 +500", "bonus": { "passenger": 0.10, "reputation": 500 } },
+        { "id": "add_clean_robot", "name": "自動清掃ロボット", "cost": 8000000, "icon": "🧹", "description": "24時間働く清掃ロボ。駅はいつもピカピカ", "effect": "きれい度低下 -40% / 掃除効率UP", "bonus": { "cleanDecay": -0.40, "cleanPower": 10 } },
+        { "id": "add_smart_payment", "name": "スマホ決済全面対応", "cost": 9000000, "icon": "💳", "description": "キャッシュレス完全対応。客単価が上がる", "effect": "収益 +18%", "bonus": { "income": 0.18 }, "requireVisitors": 210000 },
+        { "id": "add_robot_cafe", "name": "ロボットカフェ", "cost": 10000000, "icon": "☕", "description": "ロボットバリスタが淹れるコーヒー。話題沸騰", "effect": "収益 +15% / 乗客数 +10%", "bonus": { "income": 0.15, "passenger": 0.10 }, "requireVisitors": 240000 },
+        { "id": "add_auto_locker", "name": "自動配送ロッカー", "cost": 10500000, "icon": "📦", "description": "ネット注文品を駅で受け取り。生活インフラ化", "effect": "収益 +12% / 乗客数 +8%", "bonus": { "income": 0.12, "passenger": 0.08 }, "requireVisitors": 260000 },
+        { "id": "add_crowd_display", "name": "リアルタイム混雑表示", "cost": 11000000, "icon": "📊", "description": "混雑状況をリアルタイム配信。分散乗車を促進", "effect": "乗客数 +15% / 評判 +800", "bonus": { "passenger": 0.15, "reputation": 800 }, "requireVisitors": 290000 },
+        { "id": "add_led_system", "name": "省エネLED全面化", "cost": 11500000, "icon": "💡", "description": "美しい照明で安全性も向上。夜が輝く", "effect": "きれい度低下 -15% / 評判 +500", "bonus": { "cleanDecay": -0.15, "reputation": 500 }, "requireVisitors": 310000 },
+        { "id": "add_5g_station", "name": "5Gステーション", "cost": 13000000, "icon": "📡", "description": "超高速通信。テレワーカーの聖地に", "effect": "乗客数 +18% / 収益 +10%", "bonus": { "passenger": 0.18, "income": 0.10 }, "requireVisitors": 330000 },
+        { "id": "add_iot_sensors", "name": "IoTセンサー管理", "cost": 14000000, "icon": "🔬", "description": "設備の異常を自動検知。メンテナンス効率化", "effect": "きれい度低下 -15% / 掃除効率UP", "bonus": { "cleanDecay": -0.15, "cleanPower": 5 }, "requireVisitors": 345000 }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "国際駅",
+      "passengersPerMin": 500,
+      "incomePerPassenger": 90,
+      "upgrades": [
+        { "id": "add_duty_free", "name": "免税店", "cost": 16000000, "icon": "🛍️", "description": "ブランド品が免税で。外国人客の財布が開く", "effect": "収益 +20%", "bonus": { "income": 0.20 } },
+        { "id": "add_ai_concierge", "name": "多言語AIコンシェルジュ", "cost": 19000000, "icon": "🌐", "description": "50言語対応AI。世界中から人が来る", "effect": "乗客数 +15% / 評判 +1000", "bonus": { "passenger": 0.15, "reputation": 1000 } },
+        { "id": "add_airport_bus", "name": "空港連絡バス", "cost": 22000000, "icon": "✈️", "description": "空港直通バス。国際線からの動線を確保", "effect": "乗客数 +18%", "bonus": { "passenger": 0.18 } },
+        { "id": "add_exchange", "name": "両替所", "cost": 24000000, "icon": "💱", "description": "リアルタイムレート表示。外国人必須スポット", "effect": "収益 +15%", "bonus": { "income": 0.15 }, "requireVisitors": 520000 },
+        { "id": "add_premium_lounge2", "name": "プレミアムラウンジ", "cost": 27000000, "icon": "🥂", "description": "最高級のおもてなし空間。VIP御用達", "effect": "収益 +20% / 評判 +1200", "bonus": { "income": 0.20, "reputation": 1200 }, "requireVisitors": 570000 },
+        { "id": "add_intl_food", "name": "インバウンド飲食フロア", "cost": 30000000, "icon": "🍜", "description": "各国料理が集結。食の万博状態", "effect": "収益 +18% / 乗客数 +12%", "bonus": { "income": 0.18, "passenger": 0.12 }, "requireVisitors": 620000 },
+        { "id": "add_maintenance_team", "name": "多機能メンテナンスチーム", "cost": 28000000, "icon": "🔧", "description": "専門チーム常駐。設備の劣化を大幅に抑える", "effect": "きれい度低下 -30% / アイテム劣化 -30%", "bonus": { "cleanDecay": -0.30, "itemDecay": -0.30 }, "requireVisitors": 670000 },
+        { "id": "add_conference", "name": "国際会議室", "cost": 33000000, "icon": "🏢", "description": "国際カンファレンスを誘致。ビジネス客が急増", "effect": "収益 +25% / 評判 +1500", "bonus": { "income": 0.25, "reputation": 1500 }, "requireVisitors": 720000 },
+        { "id": "add_luxury_hotel", "name": "高級ホテル直結", "cost": 38000000, "icon": "🏰", "description": "五つ星ホテルが駅直結。世界の富裕層が集う", "effect": "乗客数 +20% / 収益 +18%", "bonus": { "passenger": 0.20, "income": 0.18 }, "requireVisitors": 760000 },
+        { "id": "add_duty_free_vend", "name": "免税自販機ネットワーク", "cost": 35000000, "icon": "🤖", "description": "自販機でも免税手続き。売上が24時間発生", "effect": "収益 +15% / 乗客数 +8%", "bonus": { "income": 0.15, "passenger": 0.08 }, "requireVisitors": 790000 }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "伝説の駅",
+      "passengersPerMin": 800,
+      "incomePerPassenger": 120,
+      "upgrades": [
+        { "id": "add_tower", "name": "駅前タワー", "cost": 40000000, "icon": "🗼", "description": "ランドマークタワー建設。街のシンボルに", "effect": "乗客数 +15% / 評判 +2000", "bonus": { "passenger": 0.15, "reputation": 2000 } },
+        { "id": "add_underground_mall", "name": "地下商店街", "cost": 50000000, "icon": "🛒", "description": "広大な地下モール。雨の日も快適ショッピング", "effect": "収益 +20% / 乗客数 +12%", "bonus": { "income": 0.20, "passenger": 0.12 } },
+        { "id": "add_heliport", "name": "ヘリポート", "cost": 55000000, "icon": "🚁", "description": "空からのアクセスも可能に。究極の利便性", "effect": "収益 +25% / 評判 +1500", "bonus": { "income": 0.25, "reputation": 1500 } },
+        { "id": "add_aquarium", "name": "水族館", "cost": 60000000, "icon": "🐠", "description": "駅ナカ水族館。家族連れが何度も訪れる", "effect": "乗客数 +20% / 収益 +15%", "bonus": { "passenger": 0.20, "income": 0.15 }, "requireVisitors": 1500000 },
+        { "id": "add_planetarium", "name": "プラネタリウム", "cost": 55000000, "icon": "🌌", "description": "満天の星空。デートの定番スポットに", "effect": "評判 +2500 / 乗客数 +12%", "bonus": { "reputation": 2500, "passenger": 0.12 }, "requireVisitors": 2000000 },
+        { "id": "add_auto_maintenance", "name": "完全自動メンテナンス", "cost": 65000000, "icon": "⚙️", "description": "AIが全設備を自動管理。維持コスト激減", "effect": "きれい度低下 -40% / アイテム劣化 -40%", "bonus": { "cleanDecay": -0.40, "itemDecay": -0.40 }, "requireVisitors": 2500000 },
+        { "id": "add_concert_hall", "name": "コンサートホール", "cost": 70000000, "icon": "🎵", "description": "世界的アーティストが公演。チケット即完売", "effect": "乗客数 +25% / 収益 +18%", "bonus": { "passenger": 0.25, "income": 0.18 }, "requireVisitors": 3000000 },
+        { "id": "add_theme_park", "name": "テーマパーク", "cost": 85000000, "icon": "🎢", "description": "駅直結テーマパーク。夢の国がここに", "effect": "乗客数 +30% / 収益 +22%", "bonus": { "passenger": 0.30, "income": 0.22 }, "requireVisitors": 3500000 },
+        { "id": "add_art_museum", "name": "美術館", "cost": 60000000, "icon": "🖼️", "description": "世界の名画を展示。文化の薫り高い駅に", "effect": "評判 +3000 / 乗客数 +10%", "bonus": { "reputation": 3000, "passenger": 0.10 }, "requireVisitors": 4000000 },
+        { "id": "add_sky_deck", "name": "スカイデッキ", "cost": 75000000, "icon": "🌤️", "description": "天空の展望台。360度のパノラマビュー", "effect": "評判 +3500 / 乗客数 +15%", "bonus": { "reputation": 3500, "passenger": 0.15 }, "requireVisitors": 4500000 },
+        { "id": "add_monument", "name": "伝説の記念碑", "cost": 50000000, "icon": "🏆", "description": "この駅の歴史を刻む記念碑。訪れた人の心に残る", "effect": "評判 +5000", "bonus": { "reputation": 5000 }, "requireVisitors": 5000000 },
+        { "id": "add_station_master", "name": "伝説の駅長室", "cost": 80000000, "icon": "🎖️", "description": "すべてを見渡す駅長室。この駅の完成形", "effect": "収益 +30% / 乗客数 +20% / 評判 +5000", "bonus": { "income": 0.30, "passenger": 0.20, "reputation": 5000 }, "requireVisitors": 6000000 }
+      ]
+    }
+  ]
+}

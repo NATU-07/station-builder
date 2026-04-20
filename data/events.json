@@ -1,0 +1,773 @@
+{
+  "events": [
+    {
+      "id": "stray_cat",
+      "name": "迷子のネコ",
+      "icon": "🐱",
+      "description": "ホームの隅で小さな子猫が震えています...",
+      "story": "改札の隅で、寒さに震えながら小さく鳴いている一匹の猫。首輪には「タマ」と手書きされた跡があるが、インクは半ば消えかけていて、どれほどの間さまよっていたのかがうかがえる。毛並みは薄汚れ、右の前足を少しかばうようにして座っている。保護して里親を探すには少しの費用が必要だが、この駅で最初に交わす「約束」が、やがて街全体の優しさの起点になるかもしれない。",
+      "minStage": 0,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "保護してあげる",
+          "cost": 150,
+          "effects": { "reputation": 50, "unlockItem": "evt_cat_statue" },
+          "message": "猫が駅に住み着いた！ 「駅猫」として人気者に 🎁 駅猫の石像が解放！"
+        },
+        {
+          "label": "そっと見守る",
+          "cost": 0,
+          "effects": { "reputation": -10 },
+          "message": "猫はしばらくして、どこかへ行ってしまった... 近所から「冷たい駅だ」との声が"
+        }
+      ],
+      "weight": 10
+    },
+    {
+      "id": "donation",
+      "name": "地元のお年寄りからの寄付",
+      "icon": "💝",
+      "description": "「この駅にはお世話になったから」と寄付をもらいました。",
+      "minStage": 0,
+      "type": "instant",
+      "effects": { "moneyPercent": 0.15, "moneyMin": 50 },
+      "weight": 8
+    },
+    {
+      "id": "guerrilla_rain",
+      "name": "ゲリラ豪雨！",
+      "icon": "⛈️",
+      "description": "突然の激しい雨が駅を襲う！ お客さんが来なくなる...",
+      "minStage": 0,
+      "type": "buff",
+      "buff": { "passengerMult": 0.3 },
+      "duration": 75,
+      "effects": { "cleanliness": -25 },
+      "weight": 8
+    },
+    {
+      "id": "graffiti",
+      "name": "イタズラな落書き",
+      "icon": "🖍️",
+      "description": "夜のうちに壁に落書きされてしまった...",
+      "minStage": 0,
+      "type": "buff",
+      "buff": { "reputationGainMult": 0.3 },
+      "duration": 120,
+      "effects": { "cleanliness": -30, "reputation": -25 },
+      "weight": 6
+    },
+    {
+      "id": "sunny_day",
+      "name": "快晴の行楽日和",
+      "icon": "☀️",
+      "description": "天気がいいのでお出かけする人が増えそう！",
+      "minStage": 0,
+      "type": "buff",
+      "buff": { "passengerMult": 1.3 },
+      "duration": 60,
+      "weight": 10
+    },
+    {
+      "id": "school_trip",
+      "name": "遠足の学生たち",
+      "icon": "🎒",
+      "description": "遠足の子どもたちが大勢降りてきた！",
+      "minStage": 0,
+      "type": "instant",
+      "effects": { "money": 200, "reputation": 15 },
+      "weight": 8
+    },
+    {
+      "id": "lost_child",
+      "name": "迷子の子ども",
+      "icon": "👧",
+      "description": "ホームで泣いている子どもを見つけました。",
+      "story": "改札前の人混みの中、赤いランドセルを背負った小さな女の子が立ち尽くしている。唇をぎゅっと噛みしめ、涙をこらえているのが痛々しい。手には遠足のしおりが握りしめられたまま、くしゃくしゃになっている。駅員に任せるのが効率的だが、自ら手を引いて一緒に母親を探せば、その小さな手のぬくもりは、駅が「ただの通過点」ではなく「帰る場所」になった証として、長く語り継がれるだろう。",
+      "minStage": 1,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "一緒にお母さんを探す",
+          "cost": 0,
+          "effects": { "reputation": 60 },
+          "buff": { "passengerMult": 0.7 },
+          "buffDuration": 60,
+          "message": "お母さんが見つかった！ でも探している間、駅を離れたので乗客が減った"
+        },
+        {
+          "label": "駅員に任せる",
+          "cost": 100,
+          "effects": { "reputation": 15 },
+          "message": "駅員さんが対応してくれました。少し費用がかかった"
+        }
+      ],
+      "weight": 6
+    },
+    {
+      "id": "tv_coverage",
+      "name": "テレビ取材が来た！",
+      "icon": "📺",
+      "description": "「ローカル線の旅」でこの駅が紹介されます！",
+      "story": "「誰も降りないはずの駅に、なぜか花が咲いている」——ローカル番組のディレクターが、ロケバスの車窓からふと目に留めたのが始まりだった。取材当日、カメラの前で何を話したかは緊張で覚えていない。ただ、「なぜこの駅を大切にしているんですか」と聞かれて、思わず言葉に詰まったことだけは鮮明に覚えている。",
+      "minStage": 1,
+      "type": "buff",
+      "buff": { "passengerMult": 1.5, "incomeMult": 1.3, "timedItem": "evt_tv_trophy" },
+      "duration": 90,
+      "weight": 5
+    },
+    {
+      "id": "flower_bloom",
+      "name": "お花見シーズン到来！",
+      "icon": "🌸",
+      "description": "駅の近くの桜が満開に！ お花見客で大賑わい！",
+      "story": "満開の桜が春風に舞い、ホームが薄桃色の絨毯で埋め尽くされた日。改札を出た瞬間、目の前に広がった光景に立ち止まる人が絶えなかった。花びらは靴の裏にまで張り付き、電車の中にまで舞い込んで、車掌が苦笑いしていた。",
+      "minStage": 1,
+      "type": "buff",
+      "buff": { "passengerMult": 2.0, "timedItem": "evt_sakura_frame" },
+      "duration": 120,
+      "effects": { "reputation": 35 },
+      "weight": 7
+    },
+    {
+      "id": "broken_pipe",
+      "name": "水道管が破裂！",
+      "icon": "💧",
+      "description": "水道管が破裂して駅が水浸しに...",
+      "story": "冬の朝、始発前の静けさを切り裂くように、老朽化した水道管がついに悲鳴を上げた。噴き出す水は見る間にホームを浸し、天井からは錆び混じりの雫が滴り落ちてくる。始発を待つ常連の老人が、濡れた足元を不安そうに見つめている。放っておけば清潔感は損なわれ、「あの駅は水浸しだ」という噂が広まるのは時間の問題だ。",
+      "minStage": 1,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "すぐ修理する",
+          "cost": 300,
+          "effects": { "cleanliness": -5, "reputation": 10 },
+          "message": "すぐに直って被害は最小限でした"
+        },
+        {
+          "label": "後で直す",
+          "cost": 0,
+          "effects": { "cleanliness": -30, "reputation": -15 },
+          "buff": { "passengerMult": 0.6 },
+          "buffDuration": 90,
+          "message": "水浸しがひどくなって、お客さんも避けていく..."
+        }
+      ],
+      "weight": 5
+    },
+    {
+      "id": "local_festival",
+      "name": "地元のお祭り！",
+      "icon": "🎆",
+      "description": "駅周辺でお祭りが開催！ 人がたくさん来ます！",
+      "minStage": 2,
+      "type": "buff",
+      "buff": { "passengerMult": 1.8, "incomeMult": 1.5 },
+      "duration": 120,
+      "effects": { "reputation": 40 },
+      "weight": 5
+    },
+    {
+      "id": "vip_visit",
+      "name": "有名人が来駅！",
+      "icon": "⭐",
+      "description": "有名人がこの駅を訪れました！ SNSで話題に！",
+      "minStage": 2,
+      "type": "instant",
+      "effects": { "reputation": 100 },
+      "weight": 3
+    },
+    {
+      "id": "station_contest",
+      "name": "駅コンテスト開催",
+      "icon": "🏆",
+      "description": "全国の駅コンテストに選ばれました！",
+      "minStage": 2,
+      "type": "conditional",
+      "condition": { "minCleanliness": 60 },
+      "successEffects": { "money": 2000, "reputation": 80 },
+      "successMessage": "きれいな駅で入賞！ 賞金をゲット！",
+      "failEffects": { "reputation": -10 },
+      "failMessage": "駅が汚くて落選...",
+      "weight": 4
+    },
+    {
+      "id": "power_outage",
+      "name": "停電発生！",
+      "icon": "⚡",
+      "description": "一時的に停電が発生。収入が減ってしまう...",
+      "minStage": 2,
+      "type": "buff",
+      "buff": { "incomeMult": 0.3 },
+      "duration": 45,
+      "weight": 5
+    },
+    {
+      "id": "food_truck",
+      "name": "キッチンカーの出店希望",
+      "icon": "🚚",
+      "description": "「1日だけお店を出させてもらえませんか？」",
+      "story": "地元の若者が、使い込まれたエプロン姿で直談判しに来る。「この駅を盛り上げたいんです」と真っ直ぐな目で語るその横には、ピカピカに磨かれた小さなキッチンカー。食欲をそそるスパイスの香りで学生や若い家族を惹きつけるカレーか、駅の静かな趣に寄り添い、縁側で食べるような素朴な甘さで年配客を和ませる和菓子か。この駅が纏う「匂い」は、ここから決まる。",
+      "minStage": 1,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "カレー屋さんを呼ぶ",
+          "cost": 100,
+          "effects": { "money": 350, "cleanliness": -15 },
+          "buff": { "passengerMult": 1.6 },
+          "buffDuration": 90,
+          "message": "スパイスの匂いで大繁盛！ でもホームが散らかった..."
+        },
+        {
+          "label": "和菓子屋さんを呼ぶ",
+          "cost": 50,
+          "effects": { "money": 200, "reputation": 40 },
+          "buff": { "passengerMult": 1.2 },
+          "buffDuration": 90,
+          "message": "お年寄りを中心にほっこりした雰囲気に"
+        }
+      ],
+      "weight": 7
+    },
+    {
+      "id": "strong_wind",
+      "name": "強風によるダイヤ乱れ",
+      "icon": "💨",
+      "description": "電車がなかなか来ない。ホームに人が溢れてイライラ...",
+      "minStage": 1,
+      "type": "buff",
+      "buff": { "passengerMult": 0.4 },
+      "duration": 90,
+      "effects": { "reputation": -15, "cleanliness": -10 },
+      "weight": 6
+    },
+    {
+      "id": "photo_contest",
+      "name": "フォトコンテスト",
+      "icon": "📷",
+      "description": "駅の写真コンテストが開かれます！",
+      "story": "「駅のある風景」をテーマにしたコンテストの開催が知らされる。審査員には地元出身の写真家の名前もあり、入賞作品は駅構内に一年間展示されるという。参加費は安くはないが、もしこの駅の夕暮れ時の姿が——ホームに伸びる長い影と、遠くに見える山並みの稜線が——一枚の写真に収められたなら、まだ誰にも知られていないこの場所の美しさが、初めて世界に届く。",
+      "minStage": 2,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "参加する（入賞狙い）",
+          "cost": 800,
+          "effects": { "reputation": 80, "money": 1500 },
+          "message": "入賞して賞金ゲット！ 駅の知名度もアップ！"
+        },
+        {
+          "label": "協賛だけする",
+          "cost": 200,
+          "effects": { "reputation": 20 },
+          "message": "協賛のお礼で名前が載った。控えめだけど確実"
+        }
+      ],
+      "weight": 5
+    },
+    {
+      "id": "street_musician",
+      "name": "謎のストリートミュージシャン",
+      "icon": "🎸",
+      "description": "ギターを抱えた旅人が「ここで演奏させてほしい」と頼んできた。",
+      "story": "終電が去った後の構内に、聴いたこともないような美しい旋律が響き渡る。傷だらけのギターケースを足元に置いた青年が、目を閉じて奏でるその音色には、どこか遠い街の風が混じっている。通りすがりの人が一人、また一人と足を止め、いつの間にか小さな輪ができている。管理上のリスクはあるが、この音を締め出してしまえば、駅はまた「ただの箱」に戻ってしまう。",
+      "minStage": 1,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "許可する",
+          "cost": 0,
+          "effects": { "cleanliness": -15, "reputation": -10 },
+          "buff": { "passengerMult": 1.8, "incomeMult": 1.4 },
+          "buffDuration": 90,
+          "message": "素敵な音楽に人だかりが！ でもゴミが増えて苦情も来た..."
+        },
+        {
+          "label": "丁重にお断りする",
+          "cost": 0,
+          "effects": { "reputation": 5 },
+          "message": "ルールを守る駅として信頼感がアップ"
+        }
+      ],
+      "weight": 6
+    },
+    {
+      "id": "typhoon",
+      "name": "台風接近！",
+      "icon": "🌀",
+      "description": "台風で駅がめちゃくちゃに...",
+      "minStage": 2,
+      "type": "instant",
+      "effects": { "cleanliness": -35, "reputation": -20 },
+      "weight": 3
+    },
+    {
+      "id": "christmas",
+      "name": "クリスマスイルミネーション",
+      "icon": "🎄",
+      "description": "駅前がイルミネーションで輝いています！",
+      "minStage": 3,
+      "type": "buff",
+      "buff": { "passengerMult": 1.6, "incomeMult": 1.4 },
+      "duration": 180,
+      "effects": { "reputation": 60 },
+      "weight": 3
+    },
+    {
+      "id": "mascot",
+      "name": "駅のマスコット誕生",
+      "icon": "🧸",
+      "description": "駅のオリジナルマスコットが話題に！",
+      "story": "きっかけは、駅の掲示板に地元の中学生が貼った一枚のイラストだった。丸い目に小さな駅長帽をかぶった、なんとも言えない脱力系のキャラクター。それを見た乗客たちがSNSに投稿したことで一気に話題となり、「正式に駅のマスコットにしてほしい」という声が殺到した。",
+      "minStage": 3,
+      "type": "instant",
+      "effects": { "reputation": 120, "money": 500, "unlockItem": "evt_mascot_doll" },
+      "weight": 3
+    },
+    {
+      "id": "thief",
+      "name": "スリ被害が発生",
+      "icon": "🦹",
+      "description": "駅でスリ被害が報告された...",
+      "story": "混雑に乗じた巧妙な手口のスリが続発し、被害届が次々と届く。「財布を盗られた」「スマホがない」——被害者の声が待合室に重く響くたび、これまで積み上げてきた駅への信頼が崩れていく。駅の評判とは、何年もかけて一つずつ積み上げた善意の結晶だ。それを一人の犯罪者に壊されるわけにはいかない。抜本的な警備強化には大きな出費を伴うが、安全という「見えない壁」は、どんなイルミネーションよりも人を惹きつける。",
+      "minStage": 3,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "警備を強化",
+          "cost": 800,
+          "effects": { "reputation": 30 },
+          "buff": { "passengerMult": 1.2 },
+          "buffDuration": 120,
+          "message": "犯人が捕まった！ 安心感で乗客も増えた"
+        },
+        {
+          "label": "様子を見る",
+          "cost": 0,
+          "effects": { "reputation": -60 },
+          "buff": { "passengerMult": 0.5 },
+          "buffDuration": 120,
+          "message": "被害が拡大し、「危ない駅」の烙印を押された..."
+        }
+      ],
+      "weight": 4
+    },
+    {
+      "id": "fireworks",
+      "name": "花火大会！",
+      "icon": "🎇",
+      "description": "駅周辺で花火大会！ 大量の人が押し寄せる！",
+      "story": "夜空を埋め尽くす大輪の華。打ち上がるたびに地面が震え、歓声が波のように押し寄せる。駅は臨時改札を開け、ホームは浴衣姿の人々であふれかえった。祭りの後、人波が引いた深夜の駅に残された静寂が、あの夜の興奮をいっそう鮮やかに浮かび上がらせる。",
+      "minStage": 4,
+      "type": "buff",
+      "buff": { "passengerMult": 2.5, "incomeMult": 2.0, "timedItem": "evt_fireworks_lantern" },
+      "duration": 90,
+      "effects": { "reputation": 80, "money": 3000 },
+      "weight": 3
+    },
+    {
+      "id": "foreign_tourists",
+      "name": "外国人観光客の団体",
+      "icon": "🌍",
+      "description": "海外のガイドブックに載って外国人観光客が殺到！",
+      "minStage": 4,
+      "type": "buff",
+      "buff": { "passengerMult": 1.8, "incomeMult": 1.8 },
+      "duration": 120,
+      "effects": { "reputation": 100 },
+      "weight": 3
+    },
+    {
+      "id": "love_letter",
+      "name": "忘れ物：ラブレター",
+      "icon": "💌",
+      "description": "ベンチの上に、丁寧に書かれた手紙が置き忘れられている...",
+      "story": "清掃中、ベンチの隙間に落ちていた一通の封筒。宛名には初々しい文字が並び、封をするシールには小さな花柄があしらわれている。裏返すと、何度も書き直した跡がうっすらと透けて見える。この手紙を書いた誰かは今頃、伝えられなかった言葉の重さに肩を落としているはずだ。手間を惜しまず届けるか、それとも「ただの落とし物」として事務棚の奥にしまい込むか。",
+      "minStage": 0,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "落とし主を探して届ける",
+          "cost": 50,
+          "effects": { "reputation": 40, "unlockItem": "evt_love_letter_box" },
+          "buff": { "passengerMult": 0.8 },
+          "buffDuration": 60,
+          "message": "無事に届けられた！ 後日お礼の手紙が 🎁 恋文ポスト解放！ でも探している間、駅が手薄に..."
+        },
+        {
+          "label": "事務所で保管する",
+          "cost": 0,
+          "effects": { "reputation": -5 },
+          "message": "規則通りに処理した。でも誰かの想いが届かなかったかもしれない..."
+        }
+      ],
+      "weight": 6
+    },
+    {
+      "id": "movie_location",
+      "name": "映画のロケ地打診",
+      "icon": "🎬",
+      "description": "映画監督が「この駅で廃駅のシーンを撮りたい」と言っている。",
+      "story": "黒縁の眼鏡をかけた映画監督が、スタッフを連れてあなたの駅を訪れる。古びた柱を指でなぞり、差し込む西日に目を細め、「ここだ」と呟いた。「この駅で、十年ぶりに再会する二人のシーンを撮りたい」という提案。撮影期間中はケーブルが走り回り、照明が夜通し灯り、日常は確実に乱される。しかし公開されれば、この駅は「物語が生まれる場所」として、スクリーンの中で永遠に生き続ける。",
+      "minStage": 1,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "協力する",
+          "cost": 200,
+          "effects": { "reputation": 120, "money": 800, "cleanliness": -30, "unlockItem": "evt_movie_panel" },
+          "buff": { "passengerMult": 0.5 },
+          "buffDuration": 60,
+          "message": "映画がヒット！ 聖地巡礼で知名度UP！ でも撮影中は大混乱だった 🎁 記念パネル解放！"
+        },
+        {
+          "label": "お断りする",
+          "cost": 0,
+          "effects": { "reputation": 5, "money": 100 },
+          "message": "お詫びとして迷惑料をもらった。平穏な日常を守った"
+        }
+      ],
+      "weight": 4
+    },
+    {
+      "id": "miracle_sunset",
+      "name": "奇跡の夕日",
+      "icon": "🌅",
+      "description": "今日は特別な夕焼け。みんながスマホを構えている...",
+      "story": "それは予兆もなく訪れた。雲一つない空が、いつもとは違う深い黄金色に染まり始め、やがて駅全体が琥珀の光に包まれた。ホームにいた全員が——急いでいたはずのビジネスマンも、イヤホンをしていた学生も——言葉を失い、ただ空を見上げていた。誰からともなくスマホが掲げられ、しかしどの写真も、あの瞬間の息を呑むような美しさには遠く及ばなかった。",
+      "minStage": 0,
+      "type": "buff",
+      "buff": { "passengerMult": 1.4, "timedItem": "evt_sunset_photo" },
+      "duration": 90,
+      "effects": { "reputation": 40 },
+      "weight": 6
+    },
+    {
+      "id": "kind_regular",
+      "name": "親切な常連さん",
+      "icon": "👴",
+      "description": "いつものおじいさんが「わしが掃除しといたよ」と笑っている。",
+      "minStage": 0,
+      "type": "instant",
+      "effects": { "cleanliness": 100, "reputation": 15 },
+      "weight": 5
+    },
+    {
+      "id": "vending_bonus",
+      "name": "臨時ボーナス！",
+      "icon": "🥫",
+      "description": "自販機の売上が予想以上だった！ まとまった資金が入る。",
+      "minStage": 1,
+      "type": "instant",
+      "effects": { "moneyPercent": 0.25, "moneyMin": 300 },
+      "weight": 6
+    },
+    {
+      "id": "railfan_gathering",
+      "name": "鉄道ファン大集結！",
+      "icon": "📸",
+      "description": "レトロな臨時列車が通過するとの情報が！ 鉄道ファンが殺到！",
+      "story": "「SL復活運転」の情報がネットに流れた瞬間、全国から鉄道ファンが殺到した。ホームは三脚の林と化し、通過の瞬間にはシャッター音が嵐のように鳴り響いた。興奮冷めやらぬ彼らと夜まで語り合った一日は、駅の歴史に刻まれる特別な日になった。",
+      "minStage": 2,
+      "type": "buff",
+      "buff": { "passengerMult": 2.2, "incomeMult": 1.8, "timedItem": "evt_railfan_model" },
+      "duration": 75,
+      "effects": { "reputation": 50, "money": 500 },
+      "weight": 4
+    },
+    {
+      "id": "bulb_out",
+      "name": "電球切れ",
+      "icon": "💡",
+      "description": "ホームの明かりがチカチカしている... 不気味な雰囲気に。",
+      "story": "ホームの端にある街灯が切れ、足元が黒い影に沈んでいる。夜、会社帰りのサラリーマンが不安そうに足早にその場所を避けて通り、学校帰りの高校生は友達と固まって歩いている。暗がりが広がるたび、駅の「信頼」が少しずつ削れていく。たった一つの電球の話だが、灯りを守ることは、ここに降り立つ人の安心を守ることと同じだ。",
+      "minStage": 0,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "すぐ交換する",
+          "cost": 120,
+          "effects": { "reputation": 5 },
+          "message": "明るくなった！ お客さんも安心"
+        },
+        {
+          "label": "しばらく放置する",
+          "cost": 0,
+          "effects": { "reputation": -20 },
+          "buff": { "passengerMult": 0.5 },
+          "buffDuration": 120,
+          "message": "暗い駅に人が寄りつかなくなった..."
+        }
+      ],
+      "weight": 7
+    },
+    {
+      "id": "bad_smell",
+      "name": "謎の異臭騒ぎ",
+      "icon": "🦨",
+      "description": "放置されたゴミから嫌な匂いが... お客さんがすぐ帰ってしまう！",
+      "minStage": 1,
+      "type": "buff",
+      "buff": { "passengerMult": 0.5 },
+      "duration": 60,
+      "effects": { "cleanliness": -20, "reputation": -15 },
+      "weight": 6
+    },
+    {
+      "id": "crow_attack",
+      "name": "カラスの大群襲来！",
+      "icon": "🐦‍⬛",
+      "description": "カラスがゴミ箱や花壇を荒らして散乱！ 駅がめちゃくちゃに...",
+      "minStage": 1,
+      "type": "buff",
+      "buff": { "cleanPowerMult": 0.5 },
+      "duration": 90,
+      "effects": { "cleanliness": -100, "reputation": -20 },
+      "weight": 4
+    },
+    {
+      "id": "illegal_dumping",
+      "name": "不法投棄の山",
+      "icon": "🗑️",
+      "description": "夜の間にホームの隅に粗大ゴミが捨てられている...",
+      "story": "早朝の巡回で、駅裏の空き地に積み上げられた粗大ゴミの山を発見する。古いテレビ、割れた食器、正体不明の袋。一晩でこれだけの量を運び込んだ計画性に、背筋が寒くなる。一つ許せば、次の朝にはさらに増えているだろう。「あの駅の裏は捨て放題だ」という認識が広まる前に、高い処理費用を払ってでも「ここは、そういう場所ではない」と示す必要がある。",
+      "minStage": 2,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "業者に撤去を依頼",
+          "cost": 1500,
+          "effects": { "reputation": 10 },
+          "message": "すっきりきれいに！ 住民からも感謝されました"
+        },
+        {
+          "label": "放置する",
+          "cost": 0,
+          "effects": { "reputation": -60, "cleanliness": -25 },
+          "buff": { "reputationGainMult": 0.5 },
+          "buffDuration": 180,
+          "message": "ゴミの山が悪臭を放ち、評判がどんどん下がる..."
+        }
+      ],
+      "weight": 4
+    },
+    {
+      "id": "ghost_rumor",
+      "name": "心霊スポットの噂",
+      "icon": "👻",
+      "description": "SNSで「あの駅、出るらしいよ...」と不名誉な噂が広まっている...",
+      "story": "「深夜のベンチに、昔の制服を着た女性が座っている」「話しかけると消える」——そんな根も葉もない噂がSNSで拡散され、面白半分の動画まで投稿されている。常連客は苦笑いだが、初めての利用者は本気で怯え、夜間の乗降客が目に見えて減っていく。非科学的だと正面から否定しても炎上するだけ。丁寧にお清めの儀式を行い、「ここは怖い場所ではなく、守られている場所だ」という新しい物語で上書きできるか。",
+      "minStage": 2,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "お清めをする",
+          "cost": 1000,
+          "effects": { "reputation": 20, "unlockItem": "evt_ghost_charm" },
+          "message": "お清め完了！ パワースポットに転じた！ 🎁 お清めの御札が解放！"
+        },
+        {
+          "label": "放置する",
+          "cost": 0,
+          "effects": { "reputation": -30 },
+          "buff": { "passengerMult": 0.2 },
+          "buffDuration": 150,
+          "message": "怖くて誰も近寄らなくなった..."
+        }
+      ],
+      "weight": 3
+    },
+    {
+      "id": "termite",
+      "name": "シロアリ発生！",
+      "icon": "🪲",
+      "description": "柱やベンチにシロアリが発生！ 設備がボロボロに...",
+      "minStage": 2,
+      "type": "instant",
+      "effects": { "durabilityDamagePercent": 50, "reputation": -15 },
+      "weight": 3
+    },
+    {
+      "id": "drunk",
+      "name": "酔っ払いの居座り",
+      "icon": "🍺",
+      "description": "ベンチで酔っ払いが寝込んでいる。他のお客さんが困っている...",
+      "story": "酒の匂いを漂わせ、ベンチを占領して管を巻く中年の男。空き缶が足元に転がり、隣に座ろうとした親子連れが顔をしかめて離れていく。「ここは俺の場所だ」と繰り返す声に、常連客たちの表情が曇る。毅然と警察を呼んで安全と秩序を守るか、それとも時間をかけて穏やかに語りかけ、彼の中にある何かに触れようとするか。",
+      "minStage": 1,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "警察を呼ぶ",
+          "cost": 200,
+          "effects": { "reputation": 15 },
+          "message": "警察が対応してくれた。お客さんも安心した顔に"
+        },
+        {
+          "label": "自分で説得する",
+          "cost": 0,
+          "effects": { "reputation": -15, "cleanliness": -10 },
+          "buff": { "passengerMult": 0.6 },
+          "buffDuration": 90,
+          "message": "なかなか動いてくれない... お客さんが避けていく"
+        }
+      ],
+      "weight": 5
+    },
+    {
+      "id": "express_stop",
+      "name": "ダイヤ改正で快速停車！",
+      "icon": "🚄",
+      "description": "来月からこの駅にも快速が止まることに！ 乗降客が激増！",
+      "minStage": 5,
+      "type": "buff",
+      "buff": { "passengerMult": 1.8, "incomeMult": 1.4 },
+      "duration": 120,
+      "effects": { "reputation": 200 },
+      "weight": 4
+    },
+    {
+      "id": "transfer_chaos",
+      "name": "乗り換え客の大混雑",
+      "icon": "😵",
+      "description": "ダイヤ乱れで乗り換え客がホームに溢れている...",
+      "minStage": 5,
+      "type": "buff",
+      "buff": { "passengerMult": 0.5 },
+      "duration": 90,
+      "effects": { "cleanliness": -25, "reputation": -30 },
+      "weight": 5
+    },
+    {
+      "id": "vip_train",
+      "name": "VIP専用列車の通過",
+      "icon": "👔",
+      "description": "要人を乗せた特別列車がこの駅を通過。警備費が出たが知名度UP",
+      "minStage": 5,
+      "type": "instant",
+      "effects": { "money": 50000, "reputation": 300 },
+      "weight": 3
+    },
+    {
+      "id": "heritage_nomination",
+      "name": "世界遺産候補にノミネート！",
+      "icon": "🏛️",
+      "description": "この駅の歴史的価値が認められ、世界遺産候補に！",
+      "minStage": 6,
+      "type": "buff",
+      "buff": { "passengerMult": 2.0, "incomeMult": 1.6 },
+      "duration": 150,
+      "effects": { "reputation": 500 },
+      "weight": 3
+    },
+    {
+      "id": "onsen_pipe_trouble",
+      "name": "温泉の配管トラブル",
+      "icon": "🔧",
+      "description": "温泉施設の配管から湯が噴き出した！",
+      "story": "駅の象徴である「駅ナカ温泉」——その源泉を送るメインパイプに、致命的な亀裂が見つかった。技師の表情は厳しく、「応急処置では半年持たない」と断言される。修理費は莫大で、これまでコツコツと蓄えてきた資金の大半を失うことになる。しかし、湯気の立ち上らない温泉施設はただの空き部屋であり、あの温かさを求めて遠方から足を運んでくれた人々の期待を裏切ることになる。湯気の消えた駅に、果たしてかつての輝きは戻るのだろうか。駅の未来を賭けた、最も重い決断が迫る。",
+      "minStage": 6,
+      "type": "choice",
+      "choices": [
+        {
+          "label": "即座に修理",
+          "cost": 50000,
+          "effects": { "reputation": 50 },
+          "message": "素早い対応が評価された！"
+        },
+        {
+          "label": "応急処置で済ませる",
+          "cost": 0,
+          "effects": { "reputation": -80, "cleanliness": -30 },
+          "buff": { "passengerMult": 0.6 },
+          "buffDuration": 120,
+          "message": "湯気がホームに充満... お客さんが逃げていく"
+        }
+      ],
+      "weight": 4
+    },
+    {
+      "id": "blogger_review",
+      "name": "外国人ブロガーの絶賛レビュー",
+      "icon": "📝",
+      "description": "人気ブロガーが「日本で一番美しい駅」と紹介！",
+      "minStage": 6,
+      "type": "buff",
+      "buff": { "passengerMult": 1.6, "incomeMult": 1.3 },
+      "duration": 120,
+      "effects": { "reputation": 400 },
+      "weight": 4
+    },
+    {
+      "id": "ai_malfunction",
+      "name": "AIシステム障害発生！",
+      "icon": "🤖",
+      "description": "AI改札が誤作動！ 全システムがダウンして大混乱...",
+      "minStage": 7,
+      "type": "buff",
+      "buff": { "incomeMult": 0.2 },
+      "duration": 60,
+      "effects": { "reputation": -50 },
+      "weight": 4
+    },
+    {
+      "id": "tech_conference",
+      "name": "テックカンファレンス開催",
+      "icon": "💻",
+      "description": "世界中のエンジニアがこの駅に集結！",
+      "minStage": 7,
+      "type": "buff",
+      "buff": { "passengerMult": 2.0, "incomeMult": 1.8 },
+      "duration": 90,
+      "effects": { "reputation": 300, "money": 100000 },
+      "weight": 3
+    },
+    {
+      "id": "intl_summit",
+      "name": "国際サミットの誘致成功",
+      "icon": "🌐",
+      "description": "G7サミットの会場にこの駅が選ばれた！ 世界が注目！",
+      "minStage": 8,
+      "type": "buff",
+      "buff": { "passengerMult": 2.5, "incomeMult": 2.0 },
+      "duration": 120,
+      "effects": { "reputation": 1000, "money": 500000 },
+      "weight": 2
+    },
+    {
+      "id": "bomb_threat",
+      "name": "爆破予告騒ぎ",
+      "icon": "🚨",
+      "description": "匿名の脅迫電話で駅が一時閉鎖された...",
+      "minStage": 8,
+      "type": "buff",
+      "buff": { "passengerMult": 0.1 },
+      "duration": 90,
+      "effects": { "reputation": -200 },
+      "weight": 3
+    },
+    {
+      "id": "million_visitor",
+      "name": "100万人目の来駅者！",
+      "icon": "🎊",
+      "description": "記念すべき100万人目のお客様！ セレモニーが開催された！",
+      "minStage": 9,
+      "type": "instant",
+      "effects": { "money": 1000000, "reputation": 2000 },
+      "weight": 3
+    },
+    {
+      "id": "world_heritage",
+      "name": "世界遺産に正式登録！",
+      "icon": "🏆",
+      "description": "ついにこの駅が世界遺産に！ 全世界から人が押し寄せる！",
+      "minStage": 9,
+      "type": "buff",
+      "buff": { "passengerMult": 3.0, "incomeMult": 2.5 },
+      "duration": 180,
+      "effects": { "reputation": 5000, "money": 2000000 },
+      "weight": 2
+    }
+  ]
+}
