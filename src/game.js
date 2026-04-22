@@ -118,8 +118,12 @@ async function startGame() {
 
     ui.renderUpgrades();
 
-    // デバッグモード判定（localhost / 127.0.0.1 / file:// のみ有効）
-    const IS_DEBUG = ['localhost', '127.0.0.1', ''].includes(location.hostname);
+    // デバッグモード判定
+    // - localhost / 127.0.0.1 / file:// は常に有効
+    // - 公開URLでは ?debug=1 を付けると有効（自分だけ使える隠しコマンド用）
+    const IS_DEBUG =
+        ['localhost', '127.0.0.1', ''].includes(location.hostname) ||
+        new URLSearchParams(location.search).get('debug') === '1';
 
     if (IS_DEBUG) {
         window._eventSystem = eventSystem;
