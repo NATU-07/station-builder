@@ -91,15 +91,21 @@ Object.assign(UI.prototype, {
     },
 
     updateWarnings() {
+        // お掃除中はキャンバスに「🧹 おそうじ X/Y」テキストが左上に出るので
+        // 警告バナーと特殊汚れバッジを隠す（位置がかぶる + 掃除中は対応もできない）
+        const cleaningActive = !!(this.cleaning && this.cleaning.active);
+
         const dw = document.getElementById('dirty-warning');
         const dangerous = this.station.isCleanlinessDangerous();
-        if (dw) dw.style.display = dangerous ? 'block' : 'none';
-        if (dangerous) this._updateDirtyCountdown();
+        const showWarning = dangerous && !cleaningActive;
+        if (dw) dw.style.display = showWarning ? 'block' : 'none';
+        if (showWarning) this._updateDirtyCountdown();
 
         const badge = document.getElementById('special-dirt-badge');
         const count = this.station.specialDirt ? this.station.specialDirt.dirts.length : 0;
+        const showBadge = count > 0 && !cleaningActive;
         if (badge) {
-            badge.style.display = count > 0 ? 'block' : 'none';
+            badge.style.display = showBadge ? 'block' : 'none';
             if (count > 0 && count !== this._lastBadgeCount) {
                 // タイプごとのアイコンを並べて表示
                 const icons = this.station.specialDirt.dirts

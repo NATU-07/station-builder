@@ -36,6 +36,7 @@ async function startGame() {
 
     const ui = new UI(station, () => {});
     ui.achievements = achievements;
+    ui.cleaning = cleaning;
     ui.games = new SpecialDirtGames(station, specialDirt, sound);
 
     // チュートリアル
