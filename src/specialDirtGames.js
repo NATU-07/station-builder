@@ -167,13 +167,16 @@ class SpecialDirtGames {
                 if (inZone && t.color === shotColor) {
                     // HIT
                     locked = true;
-                    this._safePlaySound('spray-hit', 0.5);
+                    // ファイル長 1962ms だと長く感じるので 1200ms でカット
+                    this._safePlaySound('spray-hit', 0.5, 1200);
                     targetEl.classList.add('sdirt-g-hit');
                     currentIdx++;
                     hitsEl.textContent = currentIdx;
                     setTimeout(() => {
                         targetEl.classList.remove('sdirt-g-hit');
                         if (currentIdx >= targetCount) {
+                            // 全ターゲット撃破 → クリア音
+                            this._safePlaySound('trash-reward', 0.5);
                             if (rafId) cancelAnimationFrame(rafId);
                             closeWith({ cost: shots * shotCost, reward: 0, extra: { shots, hits: targetCount } });
                         } else {
@@ -284,7 +287,8 @@ class SpecialDirtGames {
                     (bonus ? '<div class="sdirt-g-pos">評判 +' + bonus + '</div>' : '') +
                     '</div>';
                 arena.innerHTML = resultHtml;
-                this._safePlaySound(misses === 0 ? 'fanfare' : 'coin', 0.3);
+                // クリア音（全種共通）
+                this._safePlaySound('trash-reward', 0.5);
                 setTimeout(() => closeWith({ cost: 0, reward: 0, extra: { hits, misses, cleanPenalty, repPenalty, bonus } }), 1600);
             }, duration);
         });
