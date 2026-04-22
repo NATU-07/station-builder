@@ -27,3 +27,16 @@ PCブラウザ推奨（Chrome / Edge / Firefox）。
 ## ライセンス
 
 個人制作のゲームです。
+
+## クレジット
+
+### 音素材
+
+ゲーム内の効果音・BGMには以下のサイトの素材を使用しています。
+
+- **OtoLogic** — https://otologic.jp/ （ライセンス: CC BY 4.0）
+  - 特殊汚れ発生通知音 (`sdirt-spawn.mp3`)
+- **Springin' Sound Stock** — https://www.springin.org/sound-stock/
+- **効果音ラボ** — https://soundeffect-lab.info/
+
+各サイトのライセンスに従い、商用利用の範囲内で使用しています。
