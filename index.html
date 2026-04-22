@@ -719,7 +719,7 @@
             background: linear-gradient(135deg, #ffecec, #ffd6d6);
             border: 2px solid #cc4444;
             border-radius: 10px;
-            padding: 6px 14px;
+            padding: 8px 16px 6px;
             font-size: 12px;
             font-weight: 700;
             color: #a02020;
@@ -728,10 +728,41 @@
             box-shadow: 0 3px 10px rgba(200,60,60,0.3);
             animation: dirty-pulse 1.6s ease-in-out infinite;
             cursor: default;
+            min-width: 240px;
+            text-align: center;
+        }
+        #dirty-warning .dirty-warning-line {
+            display: block;
+        }
+        #dirty-warning .dirty-warning-countdown {
+            display: block;
+            margin-top: 2px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #802020;
+        }
+        #dirty-warning .dirty-warning-countdown .dirty-sec {
+            font-size: 13px;
+            font-weight: 800;
+            color: #cc2222;
+        }
+        #dirty-warning .dirty-progress {
+            margin-top: 5px;
+            width: 100%;
+            height: 4px;
+            background: rgba(160,32,32,0.18);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        #dirty-warning .dirty-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff8a4a, #cc2222);
+            transition: width 200ms linear;
         }
         @keyframes dirty-pulse {
             0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
-            50% { opacity: 0.8; transform: translateX(-50%) scale(1.02); }
+            50% { opacity: 0.85; transform: translateX(-50%) scale(1.02); }
         }
         /* 特殊汚れアラート（目立つ！） */
         #special-dirt-badge {
@@ -1157,7 +1188,11 @@
             <div id="upgrades-container"></div>
             <div id="items-container" style="display:none;"></div>
         </div>
-        <div id="dirty-warning">⚠ 駅が汚すぎる… 評判が下がっています</div>
+        <div id="dirty-warning">
+            <span class="dirty-warning-line">⚠ 駅が汚すぎる… 評判が下がっています</span>
+            <span class="dirty-warning-countdown">あと <span class="dirty-sec" id="dirty-countdown-sec">15</span> 秒で評判 -3</span>
+            <div class="dirty-progress"><div class="dirty-progress-fill" id="dirty-progress-fill"></div></div>
+        </div>
         <div id="special-dirt-badge">🚨 <span id="sdirt-count">0</span> 件の特殊な汚れ</div>
         <div id="sdirt-modal">
             <div class="sdirt-modal-content">
@@ -1179,22 +1214,22 @@
             </div>
         </div>
     </div>
-    <script src="src/achievements.js?v=20260422a"></script>
-    <script src="src/effects.js?v=20260422a"></script>
-    <script src="src/tutorial.js?v=20260422a"></script>
-    <script src="src/renderer.js?v=20260422a"></script>
-    <script src="src/renderer-stages.js?v=20260422a"></script>
-    <script src="src/station.js?v=20260422a"></script>
-    <script src="src/stationSave.js?v=20260422a"></script>
-    <script src="src/cleaning.js?v=20260422a"></script>
-    <script src="src/sound.js?v=20260422a"></script>
-    <script src="src/journal.js?v=20260422a"></script>
-    <script src="src/events.js?v=20260422a"></script>
-    <script src="src/specialDirt.js?v=20260422a"></script>
-    <script src="src/specialDirtGames.js?v=20260422a"></script>
-    <script src="src/ui.js?v=20260422a"></script>
-    <script src="src/specialDirtUI.js?v=20260422a"></script>
-    <script src="src/eventLogUI.js?v=20260422a"></script>
-    <script src="src/game.js?v=20260422a"></script>
+    <script src="src/achievements.js?v=20260422b"></script>
+    <script src="src/effects.js?v=20260422b"></script>
+    <script src="src/tutorial.js?v=20260422b"></script>
+    <script src="src/renderer.js?v=20260422b"></script>
+    <script src="src/renderer-stages.js?v=20260422b"></script>
+    <script src="src/station.js?v=20260422b"></script>
+    <script src="src/stationSave.js?v=20260422b"></script>
+    <script src="src/cleaning.js?v=20260422b"></script>
+    <script src="src/sound.js?v=20260422b"></script>
+    <script src="src/journal.js?v=20260422b"></script>
+    <script src="src/events.js?v=20260422b"></script>
+    <script src="src/specialDirt.js?v=20260422b"></script>
+    <script src="src/specialDirtGames.js?v=20260422b"></script>
+    <script src="src/ui.js?v=20260422b"></script>
+    <script src="src/specialDirtUI.js?v=20260422b"></script>
+    <script src="src/eventLogUI.js?v=20260422b"></script>
+    <script src="src/game.js?v=20260422b"></script>
 </body>
 </html>

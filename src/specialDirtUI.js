@@ -92,7 +92,9 @@ Object.assign(UI.prototype, {
 
     updateWarnings() {
         const dw = document.getElementById('dirty-warning');
-        if (dw) dw.style.display = this.station.isCleanlinessDangerous() ? 'block' : 'none';
+        const dangerous = this.station.isCleanlinessDangerous();
+        if (dw) dw.style.display = dangerous ? 'block' : 'none';
+        if (dangerous) this._updateDirtyCountdown();
 
         const badge = document.getElementById('special-dirt-badge');
         const count = this.station.specialDirt ? this.station.specialDirt.dirts.length : 0;
@@ -116,6 +118,27 @@ Object.assign(UI.prototype, {
         if (modal && modal.style.display === 'flex' && this._lastSdirtCount !== count) {
             this._lastSdirtCount = count;
             this.renderSpecialDirtList();
+        }
+    },
+
+    // 危険域での「あとN秒で評判-3」カウントダウンと進捗バーを更新
+    // 毎フレーム呼ばれるが textContent と style.width は値が変わったときだけ書き込む
+    // （innerHTML再構築はクリックを殺すので絶対NG）
+    _updateDirtyCountdown() {
+        const tickMs = this.station.DIRTY_TICK_MS;
+        const accum = Math.min(tickMs, this.station.dirtyTickAccum);
+        const sec = Math.max(0, Math.ceil((tickMs - accum) / 1000));
+        const secEl = document.getElementById('dirty-countdown-sec');
+        if (secEl && secEl.textContent !== String(sec)) {
+            secEl.textContent = String(sec);
+        }
+        const fill = document.getElementById('dirty-progress-fill');
+        if (fill) {
+            const pct = Math.min(100, Math.round((accum / tickMs) * 100));
+            if (this._lastDirtyPct !== pct) {
+                this._lastDirtyPct = pct;
+                fill.style.width = pct + '%';
+            }
         }
     },
 
