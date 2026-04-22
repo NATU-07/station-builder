@@ -52,9 +52,9 @@ class SpecialDirtGames {
         return closeWith;
     }
 
-    _safePlaySound(name, vol) {
+    _safePlaySound(name, vol, maxMs) {
         if (this.sound && typeof this.sound.play === 'function') {
-            try { this.sound.play(name, vol); } catch (e) { /* ignore */ }
+            try { this.sound.play(name, vol, maxMs); } catch (e) { /* ignore */ }
         }
     }
 
@@ -156,7 +156,6 @@ class SpecialDirtGames {
                 shots++;
                 shotsEl.textContent = shots;
                 costEl.textContent = '¥' + (shots * shotCost).toLocaleString();
-                this._safePlaySound('stamp', 0.2);
 
                 // 画面実座標で判定（CSSの%計算とロジックのズレを回避）
                 const tRect = targetEl.getBoundingClientRect();
@@ -168,7 +167,7 @@ class SpecialDirtGames {
                 if (inZone && t.color === shotColor) {
                     // HIT
                     locked = true;
-                    this._safePlaySound('pop', 0.3);
+                    this._safePlaySound('spray-hit', 0.5);
                     targetEl.classList.add('sdirt-g-hit');
                     currentIdx++;
                     hitsEl.textContent = currentIdx;
@@ -184,6 +183,7 @@ class SpecialDirtGames {
                     }, 450);
                 } else {
                     // MISS（コストは同じだけ取られる）
+                    this._safePlaySound('spray-miss', 0.5);
                     targetEl.classList.add('sdirt-g-shake');
                     setTimeout(() => targetEl.classList.remove('sdirt-g-shake'), 280);
                 }
@@ -247,7 +247,8 @@ class SpecialDirtGames {
                     hits++;
                     hitEl.textContent = hits;
                     drop.classList.add('sdirt-g-hit');
-                    this._safePlaySound('pop', 0.3);
+                    // 連打されるので 350ms でカット
+                    this._safePlaySound('oil-tap', 0.4, 350);
                     setTimeout(() => drop.remove(), 280);
                 });
                 arena.appendChild(drop);
@@ -336,7 +337,8 @@ class SpecialDirtGames {
                 reward += Math.ceil(base * mult);
                 rewardEl.textContent = '¥' + reward.toLocaleString();
                 comboEl.textContent = mult.toFixed(1);
-                this._safePlaySound('pop', 0.25);
+                // 連打前提なので 200ms でカット
+                this._safePlaySound('trash-tap', 0.3, 200);
                 btn.classList.remove('sdirt-g-pop');
                 void btn.offsetWidth;
                 btn.classList.add('sdirt-g-pop');
@@ -354,7 +356,7 @@ class SpecialDirtGames {
             endTimer = setTimeout(() => {
                 clearInterval(uiTimer);
                 btn.disabled = true;
-                this._safePlaySound('fanfare', 0.3);
+                this._safePlaySound('trash-reward', 0.5);
                 const arena = overlay.querySelector('.sdirt-g-arena');
                 arena.innerHTML =
                     '<div class="sdirt-g-result">' +

@@ -21,6 +21,13 @@ class SoundManager {
             weed: 'assets/sounds/草むしり.mp3',
             horn: 'assets/sounds/電車のクラクション1.mp3',
             train: 'assets/sounds/電車通過2.mp3',
+            // 特殊汚れ系（2026-04-22 追加）
+            'sdirt-spawn': 'assets/sounds/sdirt-spawn.mp3',  // 発生通知
+            'spray-hit': 'assets/sounds/spray-hit.mp3',      // 落書き命中
+            'spray-miss': 'assets/sounds/spray-miss.mp3',    // 落書き外し
+            'oil-tap': 'assets/sounds/oil-tap.mp3',          // 油汚れタップ（連打、要カット）
+            'trash-tap': 'assets/sounds/trash-tap.mp3',      // ゴミ連打（要カット）
+            'trash-reward': 'assets/sounds/trash-rewar.mp3', // ゴミ報酬（ファイル名に typo あり）
         };
         for (const [key, src] of Object.entries(files)) {
             const audio = new Audio(src);
@@ -30,7 +37,9 @@ class SoundManager {
         }
     }
 
-    play(name, volumeOverride) {
+    // play(name, volumeOverride, maxMs)
+    //   maxMs: 指定すると、その時間後に強制的に pause する（ファイルが長い時のカット用）
+    play(name, volumeOverride, maxMs) {
         if (!this.enabled) return;
         const sound = this.sounds[name];
         if (!sound) return;
@@ -41,13 +50,20 @@ class SoundManager {
         this._playing = this._playing || {};
         this._playing[name] = this._playing[name] || [];
         this._playing[name].push(clone);
-        clone.addEventListener('ended', () => {
+        const removeFromList = () => {
             const list = this._playing[name];
             if (list) {
                 const idx = list.indexOf(clone);
                 if (idx >= 0) list.splice(idx, 1);
             }
-        });
+        };
+        clone.addEventListener('ended', removeFromList);
+        if (maxMs && maxMs > 0) {
+            setTimeout(() => {
+                if (!clone.paused) clone.pause();
+                removeFromList();
+            }, maxMs);
+        }
     }
 
     // 指定した名前の再生中の音をフェードアウトして停止

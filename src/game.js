@@ -330,7 +330,7 @@ async function startGame() {
                 const def = station.specialDirt.getDef(ls.dirt.type);
                 if (def) {
                     ui.showSpecialDirtBanner(def);
-                    sound.play('horn', 0.22);
+                    sound.play('sdirt-spawn', 0.5);
                 }
             }
             const oil = station.specialDirt.lastOilPenalty;
