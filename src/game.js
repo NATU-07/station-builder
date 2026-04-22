@@ -13,6 +13,8 @@ async function startGame() {
     const station = new Station(data);
     const eventSystem = new EventSystem(station);
     station.eventSystem = eventSystem;
+    const specialDirt = new SpecialDirtSystem(station);
+    station.specialDirt = specialDirt;
     const effects = new EffectsManager(canvas);
     const renderer = new Renderer(canvas);
     const cleaning = new CleaningGame(canvas, station);
@@ -34,6 +36,7 @@ async function startGame() {
 
     const ui = new UI(station, () => {});
     ui.achievements = achievements;
+    ui.games = new SpecialDirtGames(station, specialDirt, sound);
 
     // チュートリアル
     const tutorial = new Tutorial({
@@ -47,6 +50,20 @@ async function startGame() {
             const capNote = station.offlineCapped ? '（12時間ぶんで頭打ち）' : '';
             ui.showMessage('💰 おかえりなさい！', '留守の間に ' + station.offlineEarned.toLocaleString() + ' 円たまりました' + visitorText + capNote);
         }, 500);
+    }
+
+    // オフライン油汚れペナルティ表示
+    if (loaded && station.offlineOilPenalty) {
+        const oilPenalty = station.offlineOilPenalty;
+        const oilCount = station.offlineOilCount;
+        const oilMinutes = station.offlineOilMinutes;
+        setTimeout(() => {
+            ui.showMessage(
+                '🛢️ 油汚れを放置した影響',
+                '油汚れ ' + oilCount + '個 × ' + oilMinutes + '分  /  評判 -' + oilPenalty
+            );
+        }, 2800);
+        station.offlineOilPenalty = null;
     }
 
     // オフライン自動手入れレポート表示
@@ -112,6 +129,11 @@ async function startGame() {
         window._effects = effects;
         window._tutorial = tutorial;
         window._achievements = achievements;
+        window._specialDirt = specialDirt;
+        window._debugSpawnDirt = (type) => {
+            const d = specialDirt.spawn(type);
+            return d ? d.type : 'max reached';
+        };
         window._debugEvent = () => {
             const result = eventSystem.triggerRandomEvent();
             if (result) {
@@ -196,6 +218,8 @@ async function startGame() {
     let prevTrainState = 'none';
     let prevCleaningActive = false;
     let autoMaintainAccum = 0;
+    let lastSpawnedSeen = 0;
+    let lastOilPenaltySeen = 0;
 
     function showAutoMaintainUnlockModal() {
         const existing = document.querySelector('.auto-maintain-unlock-overlay');
@@ -235,6 +259,8 @@ async function startGame() {
 
         station.updateIncome();
         station.updateCleanliness();
+        station.checkDirtyPenalty(delta);
+        if (station.specialDirt) station.specialDirt.update(delta);
         station.updateItems();
         if (!tutorial.active) station.updateTrain(delta);
         station.updatePassengers();
@@ -293,6 +319,24 @@ async function startGame() {
             station.lastBrokenItem = null;
             station.lastBrokenPenalty = null;
             showPlacedBadge();
+        }
+
+        // 特殊汚れ発生通知（大きいバナー + 音 + バッジの強調アニメ）
+        if (station.specialDirt) {
+            const ls = station.specialDirt.lastSpawned;
+            if (ls && ls.at > lastSpawnedSeen) {
+                lastSpawnedSeen = ls.at;
+                const def = station.specialDirt.getDef(ls.dirt.type);
+                if (def) {
+                    ui.showSpecialDirtBanner(def);
+                    sound.play('horn', 0.22);
+                }
+            }
+            const oil = station.specialDirt.lastOilPenalty;
+            if (oil && oil.at > lastOilPenaltySeen) {
+                lastOilPenaltySeen = oil.at;
+                ui.showMessage('🛢️ 油汚れを放置…', '評判 -' + oil.amount);
+            }
         }
 
         // 電車到着メッセージ + フロートテキスト

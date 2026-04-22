@@ -61,6 +61,13 @@ class Station {
         // 汚れ蓄積システム
         this.lastCleanedAt = Date.now();
 
+        // きれい度低下ペナルティ（40%以下15秒ごとに評判-3）
+        this.DIRTY_THRESHOLD = 40;
+        this.DIRTY_TICK_MS = 15000;
+        this.DIRTY_PENALTY = 3;
+        this.dirtyTickAccum = 0;
+        this.lastDirtyPenalty = null; // UIで表示用
+
         // アップグレードボーナス
         this.upgradePassengerBonus = 0;
         this.upgradeIncomeBonus = 0;
@@ -123,11 +130,12 @@ class Station {
         const repBonus = this.getReputationPassengerBonus();
         const upBonus = 1 + this.upgradePassengerBonus;
         const eventMult = this.eventSystem ? this.eventSystem.getPassengerMultiplier() : 1;
+        const sdirtMult = this.getSpecialDirtPassengerMult();
         const baseMin = sd.passengersPerMin;
         const baseMax = baseMin * 2 + 2;
 
-        const min = Math.max(1, Math.floor(baseMin * cleanBonus * itemBonus * repBonus * upBonus * eventMult));
-        const max = Math.max(min + 1, Math.floor(baseMax * cleanBonus * (0.5 + progressBonus * 0.5) * itemBonus * repBonus * upBonus * eventMult));
+        const min = Math.max(1, Math.floor(baseMin * cleanBonus * itemBonus * repBonus * upBonus * eventMult * sdirtMult));
+        const max = Math.max(min + 1, Math.floor(baseMax * cleanBonus * (0.5 + progressBonus * 0.5) * itemBonus * repBonus * upBonus * eventMult * sdirtMult));
         return { min, max };
     }
 
@@ -230,6 +238,27 @@ class Station {
         const elapsed = (now - this.lastCleanTime) / 1000;
         this.cleanliness = Math.max(0, this.cleanliness - this.cleanlinessDecayRate * elapsed);
         this.lastCleanTime = now;
+    }
+
+    // きれい度低下による評判ペナルティ判定（gameLoopから delta ms で呼ぶ）
+    checkDirtyPenalty(deltaMs) {
+        if (this.cleanliness > this.DIRTY_THRESHOLD) {
+            this.dirtyTickAccum = 0;
+            return null;
+        }
+        this.dirtyTickAccum += deltaMs;
+        if (this.dirtyTickAccum >= this.DIRTY_TICK_MS) {
+            this.dirtyTickAccum -= this.DIRTY_TICK_MS;
+            this.loseReputation(this.DIRTY_PENALTY);
+            this.lastDirtyPenalty = { amount: this.DIRTY_PENALTY, at: Date.now() };
+            return this.lastDirtyPenalty;
+        }
+        return null;
+    }
+
+    // きれい度が危険域かどうか（UI警告バナー用）
+    isCleanlinessDangerous() {
+        return this.cleanliness <= this.DIRTY_THRESHOLD;
     }
 
     // 掃除する（きれい度回復）
@@ -529,7 +558,7 @@ class Station {
                 total += item.effect[type] * ratio;
             }
         }
-        return total;
+        return total * this.getSpecialDirtItemMult();
     }
 
     getAutoIncome() {
@@ -540,7 +569,21 @@ class Station {
                 total += item.effect.autoIncome * ratio;
             }
         }
-        return total;
+        return total * this.getSpecialDirtItemMult();
+    }
+
+    // 落書き: 乗客数 -10%/個 (最大 -70%)
+    getSpecialDirtPassengerMult() {
+        if (!this.specialDirt) return 1;
+        const count = this.specialDirt.dirts.filter(d => d.type === 'graffiti').length;
+        return Math.max(0.3, 1 - 0.1 * count);
+    }
+
+    // ゴミの山: アイテム効果 -10%/個 (最大 -70%)
+    getSpecialDirtItemMult() {
+        if (!this.specialDirt) return 1;
+        const count = this.specialDirt.dirts.filter(d => d.type === 'trashpile').length;
+        return Math.max(0.3, 1 - 0.1 * count);
     }
 
     getIncomePerMin() {
@@ -629,121 +672,8 @@ class Station {
 
     // --- セーブ/ロード ---
 
-    save() {
-        const data = {
-            stage: this.stage,
-            money: this.money,
-            purchased: Array.from(this.purchased),
-            cleanliness: this.cleanliness,
-            totalVisitors: this.totalVisitors,
-            reputation: this.reputation,
-            reputationLevel: this.reputationLevel,
-            trainInterval: this.trainInterval,
-            lastCleanedAt: this.lastCleanedAt,
-            placedItems: this.placedItems.map(item => ({
-                instanceId: item.instanceId,
-                id: item.id,
-                name: item.name,
-                icon: item.icon,
-                durability: item.durability,
-                maxDurability: item.maxDurability,
-                effect: item.effect,
-                decayRate: item.decayRate,
-                decayType: item.decayType
-            })),
-            nextItemInstanceId: this.nextItemInstanceId,
-            unlockedEventItems: Array.from(this.unlockedEventItems),
-            events: this.eventSystem ? this.eventSystem.getSaveData() : null,
-            autoMaintain: {
-                enabled: this.autoMaintain.enabled,
-                selectedIds: Array.from(this.autoMaintain.selectedIds),
-                notified: this.autoMaintain.notified
-            },
-            savedAt: Date.now()
-        };
-        localStorage.setItem('station-builder-save', JSON.stringify(data));
-    }
-
-    load() {
-        const raw = localStorage.getItem('station-builder-save');
-        if (!raw) return false;
-
-        try {
-            const data = JSON.parse(raw);
-            this.stage = data.stage || 0;
-            this.money = data.money || 0;
-            this.purchased = new Set(data.purchased || []);
-            this.cleanliness = data.cleanliness || 20;
-            this.totalVisitors = data.totalVisitors || 0;
-            this.reputation = data.reputation || 0;
-            this.reputationLevel = data.reputationLevel || 0;
-            this.updateReputationLevel();
-            this.trainInterval = data.trainInterval || 30000;
-            this.lastCleanedAt = data.lastCleanedAt || Date.now();
-
-            // アイテム復元（旧セーブのinstanceId補完）
-            this.nextItemInstanceId = data.nextItemInstanceId || 1;
-            this.placedItems = (data.placedItems || []).map(item => ({
-                ...item,
-                instanceId: item.instanceId != null ? item.instanceId : this.nextItemInstanceId++,
-                lastDecay: Date.now()
-            }));
-            // 再計算: 最大instanceId+1を next にする（古いセーブ救済）
-            for (const it of this.placedItems) {
-                if (it.instanceId >= this.nextItemInstanceId) {
-                    this.nextItemInstanceId = it.instanceId + 1;
-                }
-            }
-
-            // イベント限定アイテム復元
-            this.unlockedEventItems = new Set(data.unlockedEventItems || []);
-
-            // イベントデータ復元
-            if (this.eventSystem && data.events) {
-                this.eventSystem.loadSaveData(data.events);
-            }
-
-            // 自動手入れ設定復元
-            if (data.autoMaintain) {
-                this.autoMaintain.enabled = !!data.autoMaintain.enabled;
-                this.autoMaintain.selectedIds = new Set(data.autoMaintain.selectedIds || []);
-                this.autoMaintain.notified = !!data.autoMaintain.notified;
-            }
-
-            // ボーナス再計算
-            this.recalcBonuses();
-
-            // オフライン収入を計算（電車到着分の50%も加算）
-            if (data.savedAt) {
-                const OFFLINE_CAP_SEC = 12 * 3600; // 12時間で頭打ち
-                const rawOfflineSec = (Date.now() - data.savedAt) / 1000;
-                const offlineSec = Math.min(rawOfflineSec, OFFLINE_CAP_SEC);
-                this.offlineCapped = rawOfflineSec > OFFLINE_CAP_SEC;
-                this.offlineSeconds = offlineSec;
-                const sd = this.getCurrentStageData();
-                const upBonus = 1 + this.upgradeIncomeBonus;
-                const passivePerSec = this.getIncomePerMin() / 60 + this.getAutoIncome() / 60;
-                // 電車到着の推定収入（50%をオフラインに適用）
-                const trainIncome = sd.passengersPerMin * sd.incomePerPassenger * upBonus / 60 * 0.5;
-                const offlineIncome = (passivePerSec + trainIncome) * offlineSec;
-                // オフライン中の推定利用客数も加算
-                const offlineVisitors = Math.floor(sd.passengersPerMin * offlineSec / 60 * 0.3);
-                if (offlineIncome > 0) {
-                    this.money += offlineIncome;
-                    this.totalVisitors += offlineVisitors;
-                    this.offlineEarned = Math.floor(offlineIncome);
-                    this.offlineVisitors = offlineVisitors;
-                }
-
-                // 自動手入れがONならオフライン劣化＋自動手入れを実行（キャップ後の秒数で）
-                this.offlineAutoMaintainReport = this.runOfflineAutoMaintain(offlineSec);
-            }
-
-            return true;
-        } catch (e) {
-            return false;
-        }
-    }
+    // save() / load() / _applyOfflineSimulation() は src/stationSave.js で
+    // Station.prototype に追加される
 
     updateIncome() {
         const now = Date.now();

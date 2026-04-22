@@ -95,9 +95,11 @@ class CleaningGame {
             weedRatio = 0.1; dustRatio = 0.4; trashRatio = 0.5;
         }
 
-        const weedCount = Math.max(0, Math.round(totalDirt * weedRatio));
-        const dustCount = Math.max(0, Math.round(totalDirt * dustRatio));
-        const trashCount = Math.max(0, totalDirt - weedCount - dustCount);
+        // 汚れがあるなら最低限保証: ゴミ4個・雑草2個・ほこり2個
+        // （最初から全部見えるように、タイプごとに数量を底上げ）
+        const weedCount = Math.max(2, Math.round(totalDirt * weedRatio));
+        const dustCount = Math.max(2, Math.round(totalDirt * dustRatio));
+        const trashCount = Math.max(4, Math.round(totalDirt * trashRatio));
 
         const placeItem = (obj) => {
             for (let attempt = 0; attempt < 20; attempt++) {
@@ -507,15 +509,18 @@ class CleaningGame {
 
     drawTrash(item) {
         const ctx = this.ctx;
-        ctx.font = item.size + 'px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(item.emoji, item.x, item.y);
-
+        // 先に影を描く（fillStyleに半透明色を設定する）
         ctx.fillStyle = 'rgba(0,0,0,0.06)';
         ctx.beginPath();
         ctx.ellipse(item.x, item.y + item.size * 0.6, item.size * 0.5, 3, 0, 0, Math.PI * 2);
         ctx.fill();
+
+        // 絵文字は必ず不透明で描く（Canvasの絵文字は fillStyle の alpha を継承するため）
+        ctx.fillStyle = '#000';
+        ctx.font = item.size + 'px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(item.emoji, item.x, item.y);
     }
 
     drawSwipeTrail() {
