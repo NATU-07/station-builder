@@ -10,8 +10,7 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# 未使用の元画像素材・作業用フォルダ
-assets/ゲーム画像/
+# 作業用フォルダ（記事用スクショは本番不要、ゲーム画像は本番に必要）
 assets/日記用スクショ/
 assets/Gemini_Generated_Image_h4uxf5h4uxf5h4ux*.png
 assets/Gemini_Generated_Image_jn472tjn472tjn47.png

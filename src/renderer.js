@@ -10,11 +10,11 @@ class Renderer {
 
         // 背景画像の読み込み
         this.bgDay = new Image();
-        this.bgDay.src = 'assets/bg_day.jpg';
+        this.bgDay.src = 'assets/ゲーム画像/bg_day.jpg';
         this.bgEvening = new Image();
-        this.bgEvening.src = 'assets/bg_evening.jpg';
+        this.bgEvening.src = 'assets/ゲーム画像/bg_evening.jpg';
         this.bgNight = new Image();
-        this.bgNight.src = 'assets/bg_night.jpg';
+        this.bgNight.src = 'assets/ゲーム画像/bg_night.jpg';
         this.bgLoaded = false;
 
         let loadCount = 0;
@@ -26,48 +26,48 @@ class Renderer {
 
         // 駅舎画像
         this.stationImg0 = new Image();
-        this.stationImg0.src = 'assets/Gemini_Generated_Image_bnggwhbnggwhbngg_transparent.png';
+        this.stationImg0.src = 'assets/ゲーム画像/Gemini_Generated_Image_bnggwhbnggwhbngg_transparent.png';
         this.stationImg0.onload = onLoad;
 
         this.stationImg1 = new Image();
-        this.stationImg1.src = 'assets/station_stage0.png';
+        this.stationImg1.src = 'assets/ゲーム画像/station_stage0.png';
         this.stationImg1.onload = () => {};
 
         this.stationImg2 = new Image();
-        this.stationImg2.src = 'assets/_9034b37d-22dd-4ec5-aa08-eb17be5a4f1e_transparent.png';
+        this.stationImg2.src = 'assets/ゲーム画像/_9034b37d-22dd-4ec5-aa08-eb17be5a4f1e_transparent.png';
         this.stationImg2.onload = () => {};
 
         this.stationImg3 = new Image();
-        this.stationImg3.src = 'assets/_8f75d721-02a3-4029-b001-b942d267a82f_transparent.png';
+        this.stationImg3.src = 'assets/ゲーム画像/_8f75d721-02a3-4029-b001-b942d267a82f_transparent.png';
         this.stationImg3.onload = () => {};
 
         this.stationImg4 = new Image();
-        this.stationImg4.src = 'assets/station_stage4.png';
+        this.stationImg4.src = 'assets/ゲーム画像/station_stage4.png';
         this.stationImg4.onload = () => {};
 
         this.stationImg5 = new Image();
-        this.stationImg5.src = 'assets/station_stage5.png';
+        this.stationImg5.src = 'assets/ゲーム画像/station_stage5.png';
         this.stationImg5.onload = () => {};
 
         this.stationImg6 = new Image();
-        this.stationImg6.src = 'assets/station_stage6.png';
+        this.stationImg6.src = 'assets/ゲーム画像/station_stage6.png';
         this.stationImg6.onload = () => {};
 
         this.stationImg7 = new Image();
-        this.stationImg7.src = 'assets/station_stage7.png';
+        this.stationImg7.src = 'assets/ゲーム画像/station_stage7.png';
         this.stationImg7.onload = () => {};
 
         this.stationImg8 = new Image();
-        this.stationImg8.src = 'assets/station_stage8.png';
+        this.stationImg8.src = 'assets/ゲーム画像/station_stage8.png';
         this.stationImg8.onload = () => {};
 
         this.stationImg9 = new Image();
-        this.stationImg9.src = 'assets/station_stage9.png';
+        this.stationImg9.src = 'assets/ゲーム画像/station_stage9.png';
         this.stationImg9.onload = () => {};
 
         // 電車画像
         this.trainImg = new Image();
-        this.trainImg.src = 'assets/電車１_transparent.png';
+        this.trainImg.src = 'assets/ゲーム画像/電車１_transparent.png';
         this.trainImg.onload = () => {};
     }
 
