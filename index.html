@@ -22,20 +22,30 @@
             height: 100vh;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         #station-canvas {
             width: 100%;
-            height: 60%;
+            flex: 0 0 60%;
+            height: auto;
             display: block;
+        }
+        #status-bar {
+            background: #faf6f0;
+            border-top: 3px solid #d4c4a8;
+            padding: 10px 16px 4px;
+            flex: 0 0 auto;
         }
         #ui-panel {
             width: 100%;
-            height: 40%;
             background: linear-gradient(to bottom, #faf6f0, #f0e8dc);
-            border-top: 3px solid #d4c4a8;
             display: flex;
             flex-direction: column;
-            padding: 10px 16px;
+            padding: 4px 16px 10px;
+            flex: 1;
+            height: auto;
+            min-height: 0;
         }
         #info-bar {
             display: flex;
@@ -1147,12 +1157,440 @@
             color: #888;
             margin-top: 8px;
         }
+
+        /* スマホ専用トグルボタン（PCでは非表示、モバイル横画面のみ表示） */
+        #mobile-panel-toggle { display: none; }
+
+        /* ============ ヘルプモーダル ============ */
+        .help-overlay {
+            position: fixed; inset: 0;
+            background: rgba(20,15,10,0.65);
+            z-index: 200;
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+            animation: help-fade-in 0.2s ease;
+        }
+        @keyframes help-fade-in { from { opacity: 0; } to { opacity: 1; } }
+        .help-modal {
+            background: #faf6f0;
+            border: 3px solid #d4c4a8;
+            border-radius: 16px;
+            width: 100%; max-width: 560px;
+            max-height: 85vh;
+            display: flex; flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        .help-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 20px; border-bottom: 2px solid #e0d4c4;
+        }
+        .help-header h2 { margin: 0; font-size: 18px; color: #5a4a3a; font-family: 'Zen Maru Gothic',sans-serif; font-weight: 700; }
+        .help-close {
+            background: none; border: none; cursor: pointer; font-size: 18px;
+            width: 32px; height: 32px; border-radius: 50%;
+            color: #888; transition: background 0.2s;
+        }
+        .help-close:hover { background: #f0e8dc; color: #333; }
+        .help-body { padding: 12px 18px 18px; overflow-y: auto; }
+        .help-section {
+            border-bottom: 1px solid #e8dfcc;
+            padding: 8px 0;
+        }
+        .help-section[open] { padding-bottom: 12px; }
+        .help-section summary {
+            cursor: pointer; padding: 8px 4px;
+            font-size: 14px; font-weight: 700; color: #5a4a3a;
+            display: flex; align-items: center; gap: 10px;
+            list-style: none;
+        }
+        .help-section summary::-webkit-details-marker { display: none; }
+        .help-section summary::before { content: '▶'; color: #b89868; transition: transform 0.2s; font-size: 10px; }
+        .help-section[open] summary::before { transform: rotate(90deg); }
+        .help-icon { font-size: 18px; }
+        .help-content { padding: 4px 8px 4px 28px; color: #5a4a3a; font-size: 13px; line-height: 1.7; }
+        .help-content p { margin: 4px 0; }
+
+        /* ============ 解放時ヒント (Hint Modal) ============ */
+        .hint-overlay {
+            position: fixed; inset: 0;
+            background: rgba(20,15,10,0.55);
+            z-index: 250;
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px;
+            animation: hint-fade-in 0.25s ease;
+        }
+        @keyframes hint-fade-in { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .hint-modal {
+            background: linear-gradient(135deg, #fff8ee, #fff);
+            border: 3px solid #e8c84a;
+            border-radius: 18px;
+            padding: 22px 26px 18px;
+            text-align: center;
+            max-width: 360px; width: 100%;
+            box-shadow: 0 10px 32px rgba(150,120,40,0.35);
+            font-family: 'Zen Maru Gothic',sans-serif;
+            animation: hint-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes hint-pop {
+            from { transform: scale(0.6); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .hint-icon { font-size: 48px; margin-bottom: 6px; }
+        .hint-title { font-size: 16px; font-weight: 700; color: #6a4a1a; margin-bottom: 10px; }
+        .hint-body p { font-size: 13px; color: #5a4a3a; line-height: 1.7; margin: 4px 0; }
+        .hint-close-btn {
+            margin-top: 14px;
+            background: #e8c84a; color: #4a3a1a;
+            border: 2px solid #c8a838;
+            border-radius: 22px;
+            padding: 10px 32px;
+            font-family: 'Zen Maru Gothic',sans-serif;
+            font-weight: 700; font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(180,140,40,0.3);
+            transition: transform 0.15s, background 0.2s;
+        }
+        .hint-close-btn:hover { background: #f0d050; transform: translateY(-1px); }
+        .hint-close-btn:active { transform: translateY(0); }
+
+        /* オフラインレポートのセクション一覧 */
+        .offline-sections {
+            margin: 10px 0 4px;
+            text-align: left;
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+        .offline-section {
+            display: flex;
+            gap: 12px;
+            padding: 10px 4px;
+            border-top: 1px solid rgba(180,150,80,0.25);
+            align-items: flex-start;
+        }
+        .offline-section:first-child { border-top: none; padding-top: 4px; }
+        .offline-section-icon { font-size: 26px; flex-shrink: 0; }
+        .offline-section-info { flex: 1; min-width: 0; }
+        .offline-section-title { font-size: 13px; font-weight: 700; color: #6a4a1a; margin-bottom: 3px; }
+        .offline-section-body p { font-size: 12px; color: #5a4a3a; line-height: 1.6; margin: 1px 0; }
+
+        /* =====================================================
+         * 縦画面のスマホ向け: 横画面に回してねの案内を全画面オーバーレイ
+         * ===================================================== */
+        @media (max-width: 900px) and (orientation: portrait) {
+            body::before {
+                content: "📱↻\A 横画面で\Aプレイしてください";
+                white-space: pre;
+                position: fixed;
+                inset: 0;
+                background: linear-gradient(135deg, #3a2a1a, #5a4a3a);
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Zen Maru Gothic', sans-serif;
+                font-size: 24px;
+                font-weight: 700;
+                line-height: 1.8;
+                z-index: 9999;
+                text-align: center;
+                padding: 40px 20px;
+            }
+        }
+
+        /* =====================================================
+         * スマホ横画面 (1000px以下、横向き)
+         * - canvas を画面いっぱい (アスペクト比960:400維持で左右クロップ)
+         * - status-bar (駅名・お金等) を画面上部に常時表示 (半透明オーバーレイ)
+         * - ui-panel をボトムシート化 (▲メニュー で開閉)
+         * - おそうじボタンを右下FAB
+         * ===================================================== */
+        @media (max-width: 1000px) and (orientation: landscape) {
+            body { -webkit-text-size-adjust: 100%; }
+            #game-wrapper {
+                touch-action: manipulation;
+                display: block;  /* モバイルではflexじゃなく絶対配置に */
+            }
+
+            /* === Canvas: 画面いっぱい (アスペクト比維持で左右クロップ) === */
+            #station-canvas {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                height: 100vh;
+                width: auto;
+                aspect-ratio: 960 / 400;
+                max-width: none;
+                flex: none;
+            }
+
+            /* お掃除中は canvas をビューポート内に完全に収める (UI見切れ防止) */
+            /* 画像のアスペクト比は保ったまま、上下に余白ができても OK */
+            body.cleaning-active #station-canvas {
+                height: auto;
+                width: min(100vw, calc(100vh * 2.4));
+                aspect-ratio: 960 / 400;
+                max-width: 100vw;
+                max-height: 100vh;
+                top: 0;
+            }
+
+            /* === Status bar: 画面上部に常時オーバーレイ表示 === */
+            #status-bar {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                right: 6px;
+                background: rgba(255,250,242,0.88);
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+                border-top: none;
+                border-radius: 12px;
+                padding: 6px 12px;
+                z-index: 18;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+                flex: none;
+            }
+            #info-bar { flex-wrap: wrap; gap: 4px 10px; margin-bottom: 4px; }
+            #stage-name { font-size: 14px; }
+            #money-display { font-size: 13px; }
+            #passenger-display, #reputation-display { font-size: 11px; }
+            #stage-progress { flex-wrap: wrap; font-size: 10px; gap: 3px; margin-bottom: 2px; }
+            .stage-dot { width: 12px; height: 5px; }
+            #progress-bar-container { height: 8px; margin-bottom: 0; }
+
+            /* === UI Panel: ボトムシート、デフォルト下に隠れる === */
+            #ui-panel {
+                position: absolute;
+                left: 0;
+                bottom: -75vh;
+                width: 100%;
+                height: 75vh;
+                transition: bottom 0.3s ease-out;
+                border-radius: 18px 18px 0 0;
+                box-shadow: 0 -6px 24px rgba(0,0,0,0.25);
+                z-index: 20;
+                padding: 14px 12px 14px;
+                overflow-y: auto;
+                background: linear-gradient(to bottom, #faf6f0, #f0e8dc);
+                flex: none;
+            }
+            body.panel-open #ui-panel {
+                bottom: 0;
+            }
+
+            /* === ▲メニュー トグルボタン: 下中央に固定表示 === */
+            #mobile-panel-toggle {
+                display: block;
+                position: absolute;
+                bottom: 12px;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 25;
+                background: rgba(255,255,255,0.95);
+                border: 2px solid #d4c4a8;
+                border-radius: 22px;
+                padding: 10px 24px;
+                font-family: 'Zen Maru Gothic', sans-serif;
+                font-weight: 700;
+                color: #5a4a3a;
+                font-size: 14px;
+                cursor: pointer;
+                box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+                transition: bottom 0.3s ease-out;
+            }
+            body.panel-open #mobile-panel-toggle {
+                bottom: calc(75vh + 10px);
+                background: rgba(80,60,40,0.92);
+                color: #fff;
+                border-color: rgba(80,60,40,0.92);
+            }
+
+            /* === おそうじボタンを FAB 化 (左下固定、パネル開いてる時は非表示) === */
+            /* position: fixed で ui-panel から脱出して画面に固定 */
+            #clean-btn {
+                position: fixed !important;
+                bottom: 12px !important;
+                left: 12px !important;
+                top: auto !important;
+                right: auto !important;
+                z-index: 25;
+                margin: 0 !important;
+                width: 60px !important;
+                height: 60px !important;
+                min-height: 60px !important;
+                border-radius: 50% !important;
+                padding: 0 !important;
+                font-size: 12px !important;
+                line-height: 1.1;
+                box-shadow: 0 4px 14px rgba(80,140,40,0.4);
+                background: #d8e8c4 !important;
+                border: 3px solid #88b864 !important;
+                transition: opacity 0.2s, transform 0.2s;
+            }
+            body.panel-open #clean-btn {
+                opacity: 0;
+                pointer-events: none;
+                transform: scale(0.8);
+            }
+
+            /* === dirty-warning: status-bar の下に位置調整、コンパクトに === */
+            #dirty-warning {
+                top: 88px !important;
+                left: 6px !important;
+                right: auto;
+                min-width: 0;
+                max-width: 220px;
+                font-size: 10px;
+                padding: 5px 10px 4px;
+            }
+            #dirty-warning .dirty-warning-line { font-size: 10px; }
+            #dirty-warning .dirty-warning-countdown { font-size: 9px; margin-top: 1px; }
+            #dirty-warning .dirty-warning-countdown .dirty-sec { font-size: 11px; }
+            #dirty-warning .dirty-progress { height: 3px; margin-top: 3px; }
+
+            /* === 特殊汚れバッジも status-bar の下に === */
+            #special-dirt-badge {
+                top: 88px !important;
+                left: auto !important;
+                right: 6px !important;
+                font-size: 11px;
+                padding: 5px 10px;
+            }
+
+            /* === お掃除中はオーバーレイ系を全部隠す（canvas内のもどるボタン等を邪魔しないため） === */
+            body.cleaning-active #status-bar,
+            body.cleaning-active #dirty-warning,
+            body.cleaning-active #special-dirt-badge,
+            body.cleaning-active #mobile-panel-toggle,
+            body.cleaning-active #clean-btn {
+                display: none !important;
+            }
+
+            /* === タブバー: ボトムシート内、横スクロール === */
+            #tab-bar {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                gap: 4px;
+            }
+            #tab-bar::-webkit-scrollbar { display: none; }
+            .tab-btn {
+                flex-shrink: 0;
+                font-size: 14px;
+                padding: 8px 14px;
+                min-height: 40px;
+            }
+
+            /* === アップグレード/アイテム: 2列グリッド === */
+            .upgrade-btn, .item-btn {
+                flex: 0 0 calc(50% - 4px);
+                min-width: 0;
+                font-size: 13px;
+                padding: 10px 10px;
+                min-height: 56px;
+            }
+            .upgrade-name { font-size: 13px; }
+            .upgrade-cost { font-size: 12px; }
+            .upgrade-desc { font-size: 11px; }
+            .upgrade-icon { font-size: 22px; }
+            .effect-tag { font-size: 10px; padding: 2px 6px; }
+
+            /* イベントログ: 文字を読めるサイズに */
+            .eventlog-entry { padding: 8px; }
+            .eventlog-entry-icon { font-size: 24px; }
+            .eventlog-entry-name { font-size: 11px; }
+
+            /* 各種モーダルの幅をビューポートに合わせる */
+            .journal-book {
+                width: calc(100vw - 24px);
+                max-width: 420px;
+            }
+            .journal-page {
+                padding: 22px 20px;
+            }
+            .journal-text {
+                font-size: 14px;
+                line-height: 24px;
+            }
+
+            .event-modal {
+                width: calc(100vw - 24px);
+                max-width: 380px;
+                padding: 22px 20px;
+            }
+            .event-icon { font-size: 32px; }
+            .event-title { font-size: 17px; }
+            .event-desc, .event-story { font-size: 13px; }
+            .event-choice-btn { font-size: 14px; padding: 12px 16px; min-height: 48px; }
+
+            .sdirt-modal-content {
+                width: calc(100vw - 24px);
+                max-width: 440px;
+                padding: 18px 16px;
+            }
+            .sdirt-entry { padding: 10px; }
+            .sdirt-icon { font-size: 28px; }
+            .sdirt-name { font-size: 14px; }
+            .sdirt-story, .sdirt-warn { font-size: 12px; }
+            .sdirt-btn { font-size: 13px; padding: 10px 16px; min-height: 40px; }
+
+            .eventlog-detail {
+                width: calc(100vw - 24px);
+                max-width: 360px;
+                padding: 18px;
+            }
+
+            .achv-notify {
+                max-width: calc(100vw - 24px);
+                padding: 10px 16px;
+            }
+            .achv-notify-icon { font-size: 24px; }
+            .achv-notify-name { font-size: 13px; }
+
+            /* 警告バナー / 特殊汚れバッジを画面幅に合わせる */
+            #dirty-warning {
+                min-width: 0;
+                max-width: calc(100vw - 24px);
+                font-size: 11px;
+                padding: 6px 12px 4px;
+            }
+            #dirty-warning .dirty-warning-countdown { font-size: 10px; }
+            #dirty-warning .dirty-warning-countdown .dirty-sec { font-size: 12px; }
+
+            #special-dirt-badge {
+                font-size: 13px;
+                padding: 8px 14px;
+                top: 60px;
+            }
+
+            /* メッセージポップアップを大きめに */
+            #message-popup { font-size: 15px; padding: 16px 22px; }
+            #message-sub { font-size: 12px; }
+
+            /* おそうじ中の特殊汚れミニゲーム overlay */
+            .sdirt-game-box { width: calc(100vw - 24px) !important; max-width: 440px !important; }
+        }
+
+        /* iPhone SE 等の極小画面 (480px以下) */
+        @media (max-width: 480px) {
+            #stage-name { font-size: 14px; }
+            #money-display { font-size: 13px; }
+            .tab-btn { font-size: 13px; padding: 8px 10px; }
+            .upgrade-name { font-size: 12px; }
+            .upgrade-cost { font-size: 11px; }
+            .upgrade-desc { font-size: 10px; }
+
+            /* グリッドを1列にしてもいいが、ひとまず2列キープ（情報量確保） */
+        }
     </style>
 </head>
 <body>
     <div id="game-wrapper">
         <canvas id="station-canvas" width="960" height="400"></canvas>
-        <div id="ui-panel">
+        <!-- 常時表示するステータス（駅名・お金・評判・進化バー） -->
+        <div id="status-bar">
             <div id="info-bar">
                 <span id="stage-name">さびれた無人駅</span>
                 <span id="passenger-display">🚶 乗客: 0人/分</span>
@@ -1163,12 +1601,15 @@
             <div id="progress-bar-container">
                 <div id="progress-bar"></div>
             </div>
+        </div>
+        <div id="ui-panel">
             <div id="tab-bar">
                 <button class="tab-btn active" data-tab="upgrades">せつび</button>
                 <button class="tab-btn" data-tab="shop">おみせ</button>
                 <button class="tab-btn" data-tab="placed">もちもの</button>
                 <button class="tab-btn" data-tab="eventlog">おもいで</button>
                 <button class="tab-btn" data-tab="achievements">🏆</button>
+                <button id="help-btn" title="ヘルプ" style="padding:5px 10px;border:none;background:transparent;color:#a89878;font-family:'Zen Maru Gothic',sans-serif;font-size:13px;cursor:pointer;">❓</button>
                 <button id="clean-btn" class="tab-btn" style="margin-left:auto;background:#e8f4e0;border:2px solid #a8c888;color:#5a7a3a;font-weight:700;">おそうじ</button>
                 <select id="debug-stage" style="margin-left:4px;font-size:11px;padding:2px 4px;border:1px solid #cc4444;border-radius:4px;background:#fff0f0;color:#cc4444;font-family:'Zen Maru Gothic',sans-serif;">
                     <option value="">🔧 Stage移動</option>
@@ -1189,7 +1630,7 @@
             <div id="items-container" style="display:none;"></div>
         </div>
         <div id="dirty-warning">
-            <span class="dirty-warning-line">⚠ 駅が汚すぎる… 評判が下がっています</span>
+            <span class="dirty-warning-line">駅が汚すぎる… 評判が下がっています</span>
             <span class="dirty-warning-countdown">あと <span class="dirty-sec" id="dirty-countdown-sec">15</span> 秒で評判 -3</span>
             <div class="dirty-progress"><div class="dirty-progress-fill" id="dirty-progress-fill"></div></div>
         </div>
@@ -1213,23 +1654,27 @@
                 <button class="clear-close" id="clear-close-btn">これからも駅を見守る</button>
             </div>
         </div>
+        <!-- スマホ専用: ボトムシートのトグルボタン -->
+        <button id="mobile-panel-toggle" aria-label="メニューを開閉">▲ メニュー</button>
     </div>
-    <script src="src/achievements.js?v=20260422i"></script>
-    <script src="src/effects.js?v=20260422i"></script>
-    <script src="src/tutorial.js?v=20260422i"></script>
-    <script src="src/renderer.js?v=20260422i"></script>
-    <script src="src/renderer-stages.js?v=20260422i"></script>
-    <script src="src/station.js?v=20260422i"></script>
-    <script src="src/stationSave.js?v=20260422i"></script>
-    <script src="src/cleaning.js?v=20260422i"></script>
-    <script src="src/sound.js?v=20260422i"></script>
-    <script src="src/journal.js?v=20260422i"></script>
-    <script src="src/events.js?v=20260422i"></script>
-    <script src="src/specialDirt.js?v=20260422i"></script>
-    <script src="src/specialDirtGames.js?v=20260422i"></script>
-    <script src="src/ui.js?v=20260422i"></script>
-    <script src="src/specialDirtUI.js?v=20260422i"></script>
-    <script src="src/eventLogUI.js?v=20260422i"></script>
-    <script src="src/game.js?v=20260422i"></script>
+    <script src="src/achievements.js?v=20260423l"></script>
+    <script src="src/effects.js?v=20260423l"></script>
+    <script src="src/tutorial.js?v=20260423l"></script>
+    <script src="src/renderer.js?v=20260423l"></script>
+    <script src="src/renderer-stages.js?v=20260423l"></script>
+    <script src="src/station.js?v=20260423l"></script>
+    <script src="src/stationSave.js?v=20260423l"></script>
+    <script src="src/cleaning.js?v=20260423l"></script>
+    <script src="src/sound.js?v=20260423l"></script>
+    <script src="src/journal.js?v=20260423l"></script>
+    <script src="src/events.js?v=20260423l"></script>
+    <script src="src/specialDirt.js?v=20260423l"></script>
+    <script src="src/specialDirtGames.js?v=20260423l"></script>
+    <script src="src/help.js?v=20260423l"></script>
+    <script src="src/hints.js?v=20260423l"></script>
+    <script src="src/ui.js?v=20260423l"></script>
+    <script src="src/specialDirtUI.js?v=20260423l"></script>
+    <script src="src/eventLogUI.js?v=20260423l"></script>
+    <script src="src/game.js?v=20260423l"></script>
 </body>
 </html>

@@ -39,50 +39,54 @@ async function startGame() {
     ui.cleaning = cleaning;
     ui.games = new SpecialDirtGames(station, specialDirt, sound);
 
+    // ヘルプモーダル & 解放時ヒント
+    const help = new HelpManager();
+    const hints = new Hints();
+    window._help = help;
+    window._hints = hints;
+
     // チュートリアル
     const tutorial = new Tutorial({
         station, ui, cleaning, eventSystem, effects, journal, sound
     });
 
-    // オフライン収入の表示
-    if (loaded && station.offlineEarned > 0) {
-        setTimeout(() => {
-            const visitorText = station.offlineVisitors > 0 ? '  🚶 +' + station.offlineVisitors + '人' : '';
-            const capNote = station.offlineCapped ? '（12時間ぶんで頭打ち）' : '';
-            ui.showMessage('💰 おかえりなさい！', '留守の間に ' + station.offlineEarned.toLocaleString() + ' 円たまりました' + visitorText + capNote);
-        }, 500);
-    }
-
-    // オフライン油汚れペナルティ表示
-    if (loaded && station.offlineOilPenalty) {
-        const oilPenalty = station.offlineOilPenalty;
-        const oilCount = station.offlineOilCount;
-        const oilMinutes = station.offlineOilMinutes;
-        setTimeout(() => {
-            ui.showMessage(
-                '🛢️ 油汚れを放置した影響',
-                '油汚れ ' + oilCount + '個 × ' + oilMinutes + '分  /  評判 -' + oilPenalty
-            );
-        }, 2800);
-        station.offlineOilPenalty = null;
-    }
-
-    // オフライン自動手入れレポート表示
-    if (loaded && station.offlineAutoMaintainReport) {
-        const r = station.offlineAutoMaintainReport;
-        if (r.totalMaintains > 0 || r.brokenItems.length > 0) {
-            setTimeout(() => {
-                let sub = '';
+    // オフライン中の出来事を1つのレポートにまとめて表示（閉じるまで残る）
+    if (loaded) {
+        const sections = [];
+        if (station.offlineEarned > 0) {
+            const visitorText = station.offlineVisitors > 0 ? '\n🚶 来駅 +' + station.offlineVisitors + '人' : '';
+            const capNote = station.offlineCapped ? '\n（12時間ぶんで頭打ち）' : '';
+            sections.push({
+                icon: '💰',
+                title: 'おかえりなさい！',
+                body: '留守の間に ' + station.offlineEarned.toLocaleString() + ' 円稼ぎました' + visitorText + capNote
+            });
+        }
+        if (station.offlineOilPenalty) {
+            sections.push({
+                icon: '🛢️',
+                title: '油汚れを放置した影響',
+                body: '油汚れ ' + station.offlineOilCount + '個 × ' + station.offlineOilMinutes + '分\n評判 -' + station.offlineOilPenalty
+            });
+            station.offlineOilPenalty = null;
+        }
+        if (station.offlineAutoMaintainReport) {
+            const r = station.offlineAutoMaintainReport;
+            if (r.totalMaintains > 0 || r.brokenItems.length > 0) {
+                let body = '';
                 if (r.totalMaintains > 0) {
-                    sub += '自動手入れ ' + r.totalMaintains + '回 / -' + Math.floor(r.totalCost).toLocaleString() + '円';
+                    body += '自動手入れ ' + r.totalMaintains + '回\n-' + Math.floor(r.totalCost).toLocaleString() + '円';
                 }
                 if (r.brokenItems.length > 0) {
-                    sub += (sub ? ' / ' : '') + '壊れた: ' + r.brokenItems.join('、');
+                    body += (body ? '\n' : '') + '壊れたアイテム: ' + r.brokenItems.join('、');
                 }
-                ui.showMessage('🔧 オフライン自動手入れ', sub);
-            }, 2200);
+                sections.push({ icon: '🔧', title: 'オフライン自動手入れ', body });
+            }
+            station.offlineAutoMaintainReport = null;
         }
-        station.offlineAutoMaintainReport = null;
+        if (sections.length > 0) {
+            setTimeout(() => showOfflineReport(sections, station, hints), 500);
+        }
     }
 
     ui.onPurchase = (upgrade) => {
@@ -117,6 +121,15 @@ async function startGame() {
     };
 
     ui.renderUpgrades();
+
+    // スマホ用: ボトムシートのトグルボタン
+    const mobileToggle = document.getElementById('mobile-panel-toggle');
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', () => {
+            const isOpen = document.body.classList.toggle('panel-open');
+            mobileToggle.textContent = isOpen ? '▼ 閉じる' : '▲ メニュー';
+        });
+    }
 
     // デバッグモード判定
     // - localhost / 127.0.0.1 / file:// は常に有効
@@ -225,6 +238,10 @@ async function startGame() {
     let autoMaintainAccum = 0;
     let lastSpawnedSeen = 0;
     let lastOilPenaltySeen = 0;
+    // ヒント発火管理用
+    let lastDirtyPenaltySeen = false;
+    let lastDirtyPenaltyAt = 0;
+    let prevReputationLevel = station.reputationLevel || 0;
 
     function showAutoMaintainUnlockModal() {
         const existing = document.querySelector('.auto-maintain-unlock-overlay');
@@ -335,6 +352,8 @@ async function startGame() {
                 if (def) {
                     ui.showSpecialDirtBanner(def);
                     sound.play('sdirt-spawn', 0.5);
+                    // 初回特殊汚れ発生時の使い方ヒント
+                    setTimeout(() => hints.show('special-dirt'), 1200);
                 }
             }
             const oil = station.specialDirt.lastOilPenalty;
@@ -342,6 +361,22 @@ async function startGame() {
                 lastOilPenaltySeen = oil.at;
                 ui.showMessage('🛢️ 油汚れを放置…', '評判 -' + oil.amount);
             }
+        }
+
+        // きれい度ペナルティ初発火検知（lastDirtyPenalty が新しくなった時）
+        if (station.lastDirtyPenalty && !lastDirtyPenaltySeen) {
+            lastDirtyPenaltySeen = true;
+            hints.show('dirty-penalty');
+        } else if (station.lastDirtyPenalty && station.lastDirtyPenalty.at > lastDirtyPenaltyAt) {
+            lastDirtyPenaltyAt = station.lastDirtyPenalty.at;
+            // 2回目以降は何もしない（hints.showは表示済みなら何もしない）
+        }
+
+        // 評判ランクアップ検知
+        if (station.reputationLevel > prevReputationLevel) {
+            prevReputationLevel = station.reputationLevel;
+            // 初ランクアップ時のヒント
+            hints.show('reputation-rank-up');
         }
 
         // 電車到着メッセージ + フロートテキスト
@@ -362,6 +397,11 @@ async function startGame() {
             effects.triggerGlow(0.5);
             achievements.onClean();
             tutorial.onCleanExit();
+        }
+        // お掃除中は body にクラス付与: スマホ表示で
+        // status-bar / FAB / 警告等を CSS で非表示にしてキャンバス内のもどるボタンを邪魔しない
+        if (prevCleaningActive !== cleaning.active) {
+            document.body.classList.toggle('cleaning-active', cleaning.active);
         }
         prevCleaningActive = cleaning.active;
 
@@ -417,6 +457,38 @@ async function startGame() {
         };
         document.addEventListener('click', startBgmOnce);
     }
+}
+
+// オフライン中の出来事を一括表示するモーダル（ユーザーが閉じるまで残る）
+function showOfflineReport(sections, station, hints) {
+    const overlay = document.createElement('div');
+    overlay.className = 'hint-overlay';
+    const sectionHtml = sections.map(s =>
+        '<div class="offline-section">' +
+            '<div class="offline-section-icon">' + s.icon + '</div>' +
+            '<div class="offline-section-info">' +
+                '<div class="offline-section-title">' + s.title + '</div>' +
+                '<div class="offline-section-body">' + s.body.split('\n').map(l => '<p>' + l + '</p>').join('') + '</div>' +
+            '</div>' +
+        '</div>'
+    ).join('');
+    overlay.innerHTML =
+        '<div class="hint-modal" style="max-width:420px;">' +
+            '<div class="hint-icon">📬</div>' +
+            '<div class="hint-title">留守中のできごと</div>' +
+            '<div class="offline-sections">' + sectionHtml + '</div>' +
+            '<button class="hint-close-btn">わかった</button>' +
+        '</div>';
+    document.body.appendChild(overlay);
+    const close = () => {
+        if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+        // 閉じた後に初回ヒントを表示（重ならないように）
+        if (station.offlineEarned > 0 && hints) {
+            setTimeout(() => hints.show('offline-income'), 300);
+        }
+    };
+    overlay.querySelector('.hint-close-btn').addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
 }
 
 startGame();

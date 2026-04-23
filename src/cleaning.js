@@ -43,9 +43,14 @@ class CleaningGame {
         this.currentTool = 0;
         this.particles = [];
         this.generateItems();
+        // ブラウザのタッチジェスチャー（スクロール等）を無効化してドラッグを確実に取る
+        this._prevTouchAction = this.canvas.style.touchAction;
+        this.canvas.style.touchAction = 'none';
         this.canvas.addEventListener('pointerdown', this.onDown);
         this.canvas.addEventListener('pointermove', this.onMove);
         this.canvas.addEventListener('pointerup', this.onUp);
+        this.canvas.addEventListener('pointercancel', this.onUp);
+        this.canvas.addEventListener('pointerleave', this.onUp);
     }
 
     exit() {
@@ -69,6 +74,10 @@ class CleaningGame {
         this.canvas.removeEventListener('pointerdown', this.onDown);
         this.canvas.removeEventListener('pointermove', this.onMove);
         this.canvas.removeEventListener('pointerup', this.onUp);
+        this.canvas.removeEventListener('pointercancel', this.onUp);
+        this.canvas.removeEventListener('pointerleave', this.onUp);
+        // touch-action を元に戻す
+        this.canvas.style.touchAction = this._prevTouchAction || '';
     }
 
     generateItems() {
@@ -161,6 +170,11 @@ class CleaningGame {
 
     handleDown(e) {
         e.preventDefault();
+        // ポインタを canvas にロック → 指がキャンバス外に出ても move/up が確実に発火
+        if (e.pointerId !== undefined && this.canvas.setPointerCapture) {
+            try { this.canvas.setPointerCapture(e.pointerId); } catch (_) {}
+        }
+        this._activePointerId = e.pointerId;
         const { x, y } = this.toCanvas(e);
         this.pointerDown = true;
         this.pointerX = x;
@@ -205,7 +219,14 @@ class CleaningGame {
     }
 
     handleUp(e) {
-        e.preventDefault();
+        if (e && e.preventDefault) e.preventDefault();
+        // ポインタロック解除
+        if (e && e.pointerId !== undefined && this.canvas.releasePointerCapture) {
+            try { this.canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+        }
+        this._activePointerId = null;
+        // すでに up 済みなら二重処理しない
+        if (!this.pointerDown) return;
         this.pointerDown = false;
         if (this.grabbedItem && this.grabbedItem.type === 'weed'
             && this.grabbedItem.state !== 'done') {
