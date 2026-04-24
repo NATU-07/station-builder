@@ -45,6 +45,11 @@ async function startGame() {
     window._help = help;
     window._hints = hints;
 
+    // sound / effects は他モジュール (cleaning, achievements 等) から
+    // window._sound / window._effects 経由で呼ばれているので debug 外でも公開する
+    window._sound = sound;
+    window._effects = effects;
+
     // チュートリアル
     const tutorial = new Tutorial({
         station, ui, cleaning, eventSystem, effects, journal, sound
