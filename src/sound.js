@@ -13,14 +13,14 @@ class SoundManager {
 
     loadAll() {
         const files = {
-            coin: 'assets/sounds/お金を落とす1.mp3',
-            sweep: 'assets/sounds/ほうきで掃く.mp3',
-            flip: 'assets/sounds/カードをめくる.mp3',
-            pen: 'assets/sounds/シャーペンで字を書く.mp3',
-            stamp: 'assets/sounds/スタンプ.mp3',
-            weed: 'assets/sounds/草むしり.mp3',
-            horn: 'assets/sounds/電車のクラクション1.mp3',
-            train: 'assets/sounds/電車通過2.mp3',
+            coin: 'assets/sounds/coin.mp3',
+            sweep: 'assets/sounds/broom.mp3',
+            flip: 'assets/sounds/flip.mp3',
+            pen: 'assets/sounds/pen.mp3',
+            stamp: 'assets/sounds/stamp.mp3',
+            weed: 'assets/sounds/weed.mp3',
+            horn: 'assets/sounds/horn.mp3',
+            train: 'assets/sounds/train.mp3',
             // 特殊汚れ系（2026-04-22 追加）
             'sdirt-spawn': 'assets/sounds/sdirt-spawn.mp3',  // 発生通知
             'spray-hit': 'assets/sounds/spray-hit.mp3',      // 落書き命中
