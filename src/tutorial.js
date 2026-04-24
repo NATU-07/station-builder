@@ -20,7 +20,24 @@ class Tutorial {
         if (this.completed) return;
         this.active = true;
         this.step = -1;
+        // body にクラス付与してモバイルでオーバーレイ系を隠す
+        document.body.classList.add('tutorial-active');
+        this._installSkipButton();
         this.runStep();
+    }
+
+    // 詰まった時の脱出口（チュートリアル全体をスキップ）
+    _installSkipButton() {
+        if (document.getElementById('tut-skip-btn')) return;
+        const btn = document.createElement('button');
+        btn.id = 'tut-skip-btn';
+        btn.className = 'tut-skip-btn';
+        btn.textContent = 'スキップ';
+        btn.addEventListener('click', () => {
+            if (!confirm('チュートリアルをスキップしますか？\n（ヘルプは「❓」ボタンから後で見られます）')) return;
+            this.finish();
+        });
+        document.body.appendChild(btn);
     }
 
     // --- ステップ定義 ---
@@ -313,6 +330,10 @@ class Tutorial {
         this.waitingFor = null;
         localStorage.setItem('tutorial-completed', 'true');
         this.cleanup();
+        // body クラス＆スキップボタン除去
+        document.body.classList.remove('tutorial-active');
+        const skipBtn = document.getElementById('tut-skip-btn');
+        if (skipBtn) skipBtn.remove();
     }
 
     // --- 外部からの通知 ---
@@ -347,14 +368,44 @@ class Tutorial {
 
     // --- UI表示 ---
 
+    // モバイル横画面か判定
+    _isMobileLandscape() {
+        return window.matchMedia('(max-width: 1000px) and (orientation: landscape)').matches;
+    }
+
+    // ui-panel 内のターゲットなら自動で panel を開く
+    // ただし、ターゲットが画面に既に見えてる（FABなど）場合は何もしない
+    _ensureTargetVisible(targetEl) {
+        if (!targetEl) return;
+        const rect = targetEl.getBoundingClientRect();
+        const isVisible = rect.width > 0 && rect.height > 0 &&
+            rect.top < window.innerHeight && rect.bottom > 0 &&
+            rect.left < window.innerWidth && rect.right > 0;
+        if (isVisible) return;  // FAB など既に見えてるなら panel を開かない
+        const panel = document.getElementById('ui-panel');
+        if (panel && panel.contains(targetEl) && !document.body.classList.contains('panel-open')) {
+            document.body.classList.add('panel-open');
+            const toggle = document.getElementById('mobile-panel-toggle');
+            if (toggle) toggle.textContent = '▼ 閉じる';
+        }
+    }
+
     // 要素を指すヒント（半透明オーバーレイ+スポットライト）
+    // モバイル横画面では中央表示に切替、ui-panel内なら自動でpanel展開
     showHint(text, targetEl, onDismiss) {
         this.cleanup();
 
+        const isMobile = this._isMobileLandscape();
+        // モバイルなら ui-panel 内のターゲットを見えるようにする
+        if (isMobile) this._ensureTargetVisible(targetEl);
+
         const wrapper = document.getElementById('game-wrapper');
         // オーバーレイ
+        // ターゲットがある時はオーバーレイを透明にして、box-shadow で周囲を暗くする
+        // (こうしないと target がオーバーレイに覆われて暗く見えてしまう)
         this.overlay = document.createElement('div');
         this.overlay.className = 'tut-overlay';
+        if (targetEl) this.overlay.classList.add('tut-overlay-transparent');
         wrapper.appendChild(this.overlay);
 
         // ターゲットをハイライト
@@ -366,11 +417,12 @@ class Tutorial {
         // ヒントバブル
         this.hint = document.createElement('div');
         this.hint.className = 'tut-hint';
+        if (isMobile) this.hint.classList.add('tut-hint-center');
         this.hint.innerHTML = this.formatHintText(text);
         wrapper.appendChild(this.hint);
 
-        // 位置調整（画面端からはみ出さないようにクランプ）
-        if (targetEl) {
+        // 位置調整（PC のみ：画面端からはみ出さないようにクランプ）
+        if (!isMobile && targetEl) {
             const rect = targetEl.getBoundingClientRect();
             const wrapRect = wrapper.getBoundingClientRect();
             const hintW = 380; // max-width

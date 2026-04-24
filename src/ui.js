@@ -724,6 +724,8 @@ class UI {
             + '</div>';
 
         modal.style.display = 'flex';
+        // モバイルで他UIを隠すための body class
+        document.body.classList.add('event-showing');
 
         const buttons = modal.querySelectorAll('.event-choice-btn');
         const warningEl = document.getElementById('event-modal-warning');
@@ -772,6 +774,7 @@ class UI {
                 clearInterval(updateInterval);
                 warningEl.style.display = 'none';
                 modal.style.display = 'none';
+                document.body.classList.remove('event-showing');
                 onChoice(index);
             });
         });

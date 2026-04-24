@@ -558,14 +558,19 @@
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(20,15,10,0.55);
-            z-index: 60;
+            z-index: 1000;
+            touch-action: manipulation;
+        }
+        /* スポットライト時はオーバーレイを透明にして、box-shadow で周囲を暗くする */
+        .tut-overlay-transparent {
+            background: transparent !important;
         }
         .tut-overlay-canvas {
             bottom: 40%;
         }
         .tut-hint {
             position: absolute;
-            z-index: 61;
+            z-index: 1001;
             background: #faf6f0;
             border: 2px solid #d4b888;
             border-radius: 12px;
@@ -627,13 +632,31 @@
         }
         .tut-spotlight {
             position: relative;
-            z-index: 61 !important;
-            box-shadow: 0 0 0 4px #ffcc44, 0 0 20px rgba(255,200,60,0.5);
-            animation: tut-pulse 1.5s ease-in-out infinite;
+            z-index: 1001 !important;
+            /* 9999px の box-shadow で周囲を暗くしつつ、自身は明るいまま残す
+               (オーバーレイ重ねよりも「target だけ明るく」が確実) */
+            box-shadow:
+                0 0 0 4px #ff8833,
+                0 0 0 9px #ffcc44,
+                0 0 0 9999px rgba(20,15,10,0.6),
+                0 0 30px rgba(255,170,40,0.7);
+            animation: tut-pulse 0.9s ease-in-out infinite;
         }
         @keyframes tut-pulse {
-            0%, 100% { box-shadow: 0 0 0 4px #ffcc44, 0 0 20px rgba(255,200,60,0.5); }
-            50% { box-shadow: 0 0 0 6px #ffaa22, 0 0 30px rgba(255,200,60,0.7); }
+            0%, 100% {
+                box-shadow:
+                    0 0 0 4px #ff8833,
+                    0 0 0 9px #ffcc44,
+                    0 0 0 9999px rgba(20,15,10,0.6),
+                    0 0 30px rgba(255,170,40,0.7);
+            }
+            50% {
+                box-shadow:
+                    0 0 0 6px #ff6611,
+                    0 0 0 14px #ffaa22,
+                    0 0 0 9999px rgba(20,15,10,0.6),
+                    0 0 50px rgba(255,140,20,0.9);
+            }
         }
 
         /* 実績 */
@@ -677,11 +700,30 @@
 
         .tut-start-screen {
             position: absolute;
-            z-index: 61;
+            z-index: 1001;
             left: 50%; top: 45%;
             transform: translate(-50%, -50%);
             text-align: center;
             animation: tut-fadein 0.8s ease;
+            touch-action: manipulation;
+        }
+        .tut-skip-btn {
+            position: absolute;
+            top: 12px; left: 12px;
+            z-index: 1002;
+            background: rgba(255,255,255,0.85);
+            border: 1px solid #b89868;
+            border-radius: 16px;
+            padding: 6px 14px;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            font-size: 12px;
+            color: #5a4a3a;
+            cursor: pointer;
+            font-weight: 700;
+        }
+        /* お掃除中はスキップボタンを隠す（canvas のもどるボタンと位置が近くなるため） */
+        body.cleaning-active .tut-skip-btn {
+            display: none;
         }
         .tut-start-icon {
             font-size: 64px;
@@ -1311,28 +1353,19 @@
                 display: block;  /* モバイルではflexじゃなく絶対配置に */
             }
 
-            /* === Canvas: 画面いっぱい (アスペクト比維持で左右クロップ) === */
+            /* === Canvas: ビューポート内に完全に収める (UI見切れ防止) === */
+            /* アスペクト比 960:400 を維持、余白は上側にまとめる（背景画の下端が見えるように） */
             #station-canvas {
                 position: absolute;
-                top: 0;
+                bottom: 0;
                 left: 50%;
                 transform: translateX(-50%);
-                height: 100vh;
-                width: auto;
-                aspect-ratio: 960 / 400;
-                max-width: none;
-                flex: none;
-            }
-
-            /* お掃除中は canvas をビューポート内に完全に収める (UI見切れ防止) */
-            /* 画像のアスペクト比は保ったまま、上下に余白ができても OK */
-            body.cleaning-active #station-canvas {
-                height: auto;
                 width: min(100vw, calc(100vh * 2.4));
+                height: auto;
                 aspect-ratio: 960 / 400;
                 max-width: 100vw;
                 max-height: 100vh;
-                top: 0;
+                flex: none;
             }
 
             /* === Status bar: 画面上部に常時オーバーレイ表示 === */
@@ -1383,7 +1416,7 @@
             #mobile-panel-toggle {
                 display: block;
                 position: absolute;
-                bottom: 12px;
+                bottom: 4px;
                 left: 50%;
                 transform: translateX(-50%);
                 z-index: 25;
@@ -1400,7 +1433,7 @@
                 transition: bottom 0.3s ease-out;
             }
             body.panel-open #mobile-panel-toggle {
-                bottom: calc(75vh + 10px);
+                bottom: calc(75vh + 4px);
                 background: rgba(80,60,40,0.92);
                 color: #fff;
                 border-color: rgba(80,60,40,0.92);
@@ -1410,8 +1443,8 @@
             /* position: fixed で ui-panel から脱出して画面に固定 */
             #clean-btn {
                 position: fixed !important;
-                bottom: 12px !important;
-                left: 12px !important;
+                bottom: 4px !important;
+                left: 4px !important;
                 top: auto !important;
                 right: auto !important;
                 z-index: 25;
@@ -1466,6 +1499,54 @@
             body.cleaning-active #clean-btn {
                 display: none !important;
             }
+
+            /* === チュートリアル中はオーバーレイ系の情報表示だけ隠す
+                 (clean-btn・mobile-panel-toggle はチュートリアルの操作対象なので残す) === */
+            body.tutorial-active #status-bar,
+            body.tutorial-active #dirty-warning,
+            body.tutorial-active #special-dirt-badge {
+                display: none !important;
+            }
+
+            /* === イベント表示中はトグルボタン・FAB を隠す（選択肢が押せるように） === */
+            body.event-showing #mobile-panel-toggle,
+            body.event-showing #clean-btn {
+                display: none !important;
+            }
+
+            /* === チュートリアル要素のモバイル調整 === */
+            .tut-start-icon { font-size: 40px; margin-bottom: 6px; }
+            .tut-start-title { font-size: 22px; margin-bottom: 4px; }
+            .tut-start-sub { font-size: 12px; margin-bottom: 14px; }
+            .tut-start-btn { padding: 10px 28px; font-size: 15px; }
+            .tut-hint {
+                max-width: calc(100vw - 40px);
+                max-height: calc(100vh - 40px);
+                padding: 12px 16px;
+                overflow-y: auto;
+            }
+            .tut-hint-text { font-size: 12px; line-height: 1.5; margin-bottom: 8px; }
+            .tut-btn { font-size: 13px; padding: 9px 24px; min-height: 38px; }
+            /* tut-hint-canvas はモバイルで中央表示にする (上に寄ると見切れるため) */
+            .tut-hint-canvas {
+                top: 50% !important;
+            }
+
+            /* === イベントモーダル: コンテンツ側でスクロール === */
+            .event-modal-content {
+                max-height: calc(100vh - 12px);
+                overflow-y: auto;
+                padding: 14px 16px !important;
+                max-width: calc(100vw - 24px);
+                width: calc(100vw - 24px);
+            }
+            .event-modal-icon { font-size: 24px; margin-bottom: 2px; }
+            .event-modal-title { font-size: 14px; margin-bottom: 4px; letter-spacing: 0.5px; }
+            .event-modal-desc { font-size: 11px; margin-bottom: 6px; line-height: 1.5; }
+            .event-modal-story { font-size: 10px; padding: 6px 8px; margin-bottom: 6px; line-height: 1.5; }
+            .event-modal-choices { gap: 5px; }
+            .event-choice-btn { font-size: 12px; padding: 8px 12px; min-height: 36px; }
+            .event-choice-cost { font-size: 11px; }
 
             /* === タブバー: ボトムシート内、横スクロール === */
             #tab-bar {
@@ -1657,24 +1738,24 @@
         <!-- スマホ専用: ボトムシートのトグルボタン -->
         <button id="mobile-panel-toggle" aria-label="メニューを開閉">▲ メニュー</button>
     </div>
-    <script src="src/achievements.js?v=20260423m"></script>
-    <script src="src/effects.js?v=20260423m"></script>
-    <script src="src/tutorial.js?v=20260423m"></script>
-    <script src="src/renderer.js?v=20260423m"></script>
-    <script src="src/renderer-stages.js?v=20260423m"></script>
-    <script src="src/station.js?v=20260423m"></script>
-    <script src="src/stationSave.js?v=20260423m"></script>
-    <script src="src/cleaning.js?v=20260423m"></script>
-    <script src="src/sound.js?v=20260423m"></script>
-    <script src="src/journal.js?v=20260423m"></script>
-    <script src="src/events.js?v=20260423m"></script>
-    <script src="src/specialDirt.js?v=20260423m"></script>
-    <script src="src/specialDirtGames.js?v=20260423m"></script>
-    <script src="src/help.js?v=20260423m"></script>
-    <script src="src/hints.js?v=20260423m"></script>
-    <script src="src/ui.js?v=20260423m"></script>
-    <script src="src/specialDirtUI.js?v=20260423m"></script>
-    <script src="src/eventLogUI.js?v=20260423m"></script>
-    <script src="src/game.js?v=20260423m"></script>
+    <script src="src/achievements.js?v=20260424f"></script>
+    <script src="src/effects.js?v=20260424f"></script>
+    <script src="src/tutorial.js?v=20260424f"></script>
+    <script src="src/renderer.js?v=20260424f"></script>
+    <script src="src/renderer-stages.js?v=20260424f"></script>
+    <script src="src/station.js?v=20260424f"></script>
+    <script src="src/stationSave.js?v=20260424f"></script>
+    <script src="src/cleaning.js?v=20260424f"></script>
+    <script src="src/sound.js?v=20260424f"></script>
+    <script src="src/journal.js?v=20260424f"></script>
+    <script src="src/events.js?v=20260424f"></script>
+    <script src="src/specialDirt.js?v=20260424f"></script>
+    <script src="src/specialDirtGames.js?v=20260424f"></script>
+    <script src="src/help.js?v=20260424f"></script>
+    <script src="src/hints.js?v=20260424f"></script>
+    <script src="src/ui.js?v=20260424f"></script>
+    <script src="src/specialDirtUI.js?v=20260424f"></script>
+    <script src="src/eventLogUI.js?v=20260424f"></script>
+    <script src="src/game.js?v=20260424f"></script>
 </body>
 </html>
