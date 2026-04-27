@@ -136,6 +136,25 @@ async function startGame() {
         });
     }
 
+    // スマホ横画面: お掃除FABを game-wrapper 直下に移動して position:absolute で
+    // 表示する（iOS Safari は position:fixed + viewport-fit=cover で要素が
+    // 画面外に隠れることがあるため、▲メニューと同じ仕組みに揃える）
+    const cleanBtn = document.getElementById('clean-btn');
+    const tabBarEl = document.getElementById('tab-bar');
+    const wrapperEl = document.getElementById('game-wrapper');
+    if (cleanBtn && tabBarEl && wrapperEl) {
+        const mobileLandscapeMQ = window.matchMedia('(max-width: 1000px) and (orientation: landscape)');
+        const placeFab = () => {
+            if (mobileLandscapeMQ.matches) {
+                if (cleanBtn.parentElement !== wrapperEl) wrapperEl.appendChild(cleanBtn);
+            } else {
+                if (cleanBtn.parentElement !== tabBarEl) tabBarEl.appendChild(cleanBtn);
+            }
+        };
+        placeFab();
+        mobileLandscapeMQ.addEventListener('change', placeFab);
+    }
+
     // デバッグモード判定
     // - localhost / 127.0.0.1 / file:// は常に有効
     // - 公開URLでは ?debug=1 を付けると有効（自分だけ使える隠しコマンド用）
@@ -198,26 +217,13 @@ async function startGame() {
         if (debugReset) debugReset.style.display = 'none';
     }
 
-    // おそうじボタンで掃除ミニゲームに入る
+    // 掃除ミニゲームへの入り口は「おそうじボタン」のみ。
+    // 過去にキャンバスクリックでも入れたが、誤タップで意図せず掃除画面に入る事故が
+    // 多発したため削除（PC/スマホ共通で経路を一本化）。
     document.getElementById('clean-btn').addEventListener('click', () => {
         if (!cleaning.active) {
             cleaning.enter();
             tutorial.onCleanEnter();
-        }
-    });
-
-    // キャンバスクリックでも掃除ミニゲームに入る
-    canvas.addEventListener('click', (e) => {
-        if (cleaning.active) return;
-        // チュートリアル中はキャンバスクリックで掃除に入らせない
-        if (tutorial.active) return;
-
-        const rect = canvas.getBoundingClientRect();
-        const x = (e.clientX - rect.left) * (canvas.width / rect.width);
-        const y = (e.clientY - rect.top) * (canvas.height / rect.height);
-
-        if (y > 200 && y < 350 && x > 150 && x < 810) {
-            cleaning.enter();
         }
     });
 
@@ -281,7 +287,11 @@ async function startGame() {
     }
 
     function gameLoop(time) {
-        const delta = lastTime ? time - lastTime : 16;
+        // delta を 100ms でキャップ：背景化からの復帰や iOS Safari の RAF 一時停止後に、
+        // 1フレームで電車状態が arriving→stopped→departing→none と一気に進んで音と画面が
+        // ズレる事故を防ぐ
+        const rawDelta = lastTime ? time - lastTime : 16;
+        const delta = Math.min(rawDelta, 100);
         lastTime = time;
 
         station.updateIncome();
